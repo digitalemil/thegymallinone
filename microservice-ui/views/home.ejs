@@ -1,0 +1,85 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>TheGym</title>
+
+</head>
+<body id="body" style="
+ background: url('images/thegym.jpg'); background-size: cover; background-repeat: no-repeat; " onkeydown="handleKey(event)" 
+    onMouseDown="if(view != undefined) view.down(event);"
+	onTouchMove="if(view != undefined) view.move(event); "
+	onTouchEnd="if(view != undefined)  view.touchup(event); "
+	onTouchStart="if(view != undefined)  view.touchdown(event); "
+	onMouseUp="if(view != undefined)  view.up(event);"
+	onMouseMove="if(view != undefined) view.move(event);">
+	<script type="text/javascript" src="js/eagle/g
+	
+	lobals.js"></script>
+	<script src="socket.io/socket.io.js"></script>
+	<script>
+		let socket= io();
+	</script>
+
+	<script type="text/javascript" src="js/eagle/timer.js"></script>
+	<script type="text/javascript" src="js/eagle/tools.js"></script>
+	<script type="text/javascript" src="js/eagle/part.js"></script>
+	<script type="text/javascript" src="js/eagle/bone.js"></script>
+	<script type="text/javascript" src="js/eagle/thing.js"></script>
+	<script type="text/javascript" src="js/eagle/thingcontainer.js"></script>
+	<script type="text/javascript" src="js/eagle/ellipse.js"></script>
+	<script type="text/javascript" src="js/eagle/boundingcircle.js"></script>
+	<script type="text/javascript" src="js/eagle/triangle.js"></script>
+	<script type="text/javascript" src="js/eagle/line.js"></script>
+	<script type="text/javascript" src="js/eagle/rectangle.js"></script>
+	<script type="text/javascript" src="js/eagle/imagething.js"></script>
+	<script type="text/javascript" src="js/eagle/text.js"></script>
+	<script type="text/javascript" src="js/eagle/partanimation.js"></script>
+	<script type="text/javascript" src="js/eagle/compositeanimation.js"></script>
+	<script type="text/javascript" src="js/eagle/collisionhandler.js"></script>
+	<script type="text/javascript" src="js/eagle/coordinatetap.js"></script>
+	<script type="text/javascript" src="js/eagle/modell.js"></script>
+	<script type="text/javascript" src="js/eagle/view.js"></script>
+	<script type="text/javascript" src="js/thegym.js"></script>
+
+	<div id="all">
+		<canvas id="canvas"></canvas>
+ 	</div>
+
+	<script type="text/javascript">
+		let canvaswidth, canvasheight;
+		let canvas = document.getElementById("canvas");
+		let thegym;
+		let view;
+		
+		function handleKey(event) {
+			if (event.keyCode == 189)
+				thegym.zoomOut();
+			if (event.keyCode == 187)
+				thegym.zoomIn();
+		};
+
+		setup = function() {
+			canvaswidth = window.innerWidth- 240;
+			canvasheight = window.innerHeight;
+			document.getElementById("canvas").setAttribute("style",
+					"position:absolute; top:" + 0 + "px; left: " + 0 + "px;");
+			document.getElementById("canvas")
+					.setAttribute("width", canvaswidth);
+			document.getElementById("canvas").setAttribute("height",
+					canvasheight);
+		
+			MAXWIDGETS = localStorage.maxBelts;
+			if (MAXWIDGETS == undefined || MAXWIDGETS == null || MAXWIDGETS < 8) {
+				MAXWIDGETS = 12;
+				localStorage.maxBelts = MAXWIDGETS;
+			}
+			thegym = new TheGym();
+			view = new View(canvas, thegym, 25);
+		}
+
+		setup();
+	</script>
+</body>
+</html>

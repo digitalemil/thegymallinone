@@ -1,0 +1,56 @@
+{
+  "id": "/postserver1",
+  "backoffFactor": 1.15,
+  "backoffSeconds": 1,
+  "cmd": "python -u postserver.py $PORT0",
+  "container": {
+    "type": "MESOS",
+    "volumes": [],
+    "docker": {
+      "image": "digitalemil/mypublicrepo:centos7python36u",
+      "forcePullImage": true,
+      "parameters": []
+    }
+  },
+  "cpus": 0.1,
+  "disk": 0,
+  "fetch": [
+    {
+      "uri": "http://digitalemil.de/postserver.py",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ],
+  "instances": 1,
+  "maxLaunchDelaySeconds": 3600,
+  "mem": 128,
+  "gpus": 0,
+  "networks": [
+    {
+      "mode": "host"
+    }
+  ],
+  "portDefinitions": [
+    {
+      "labels": {
+        "VIP_0": "/postserver1:8081"
+      },
+      "name": "web",
+      "protocol": "tcp",
+      "port": 10000
+    }
+  ],
+  "requirePorts": false,
+  "upgradeStrategy": {
+    "maximumOverCapacity": 1,
+    "minimumHealthCapacity": 1
+  },
+  "killSelection": "YOUNGEST_FIRST",
+  "unreachableStrategy": {
+    "inactiveAfterSeconds": 0,
+    "expungeAfterSeconds": 0
+  },
+  "healthChecks": [],
+  "constraints": []
+}

@@ -1,0 +1,14 @@
+FROM grafana/agent:v0.23.0
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main'
+RUN apt-get update
+RUN apt update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt install -y python3 nodejs npm maven curl golang-go proccps
+
+RUN curl -o /opt/tomcat9.tgz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz
+RUN cd /opt; tar xzvf /opt/tomcat9.tgz; ln -s /opt/apache-tomcat-* /opt/tomcat; rm -fr /opt/tomcat/webapps/*
+
+ENTRYPOINT tail -f /dev/null

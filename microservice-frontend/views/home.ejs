@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <body>
+    <script src="../socket.io/socket.io.js"></script>
+	<script>
+		let socket= io();
+    socket.on('session', function(msg){
+    let e= document.getElementById("hr");
+    e.innerHTML= msg.hr;
+    e= document.getElementById("lon");
+    e.innerHTML= msg.lon;
+    e= document.getElementById("lat");
+    e.innerHTML= msg.lat;
+    e= document.getElementById("user");
+    e.innerHTML= msg.user;
+
+});
+	</script>
+     <h1><%= title %></h1>
+    <a href="/app/home"><img id="img" class="icon"/></a>
+  
+    <div style="font-size: 20px;">
+      Latest data:
+      <p></p>
+      User: <div id="user"><%= user %></div>
+      <p></p>
+      Heartrate: <div id="hr"><%= hr %></div>
+      <p></p>
+      Longitude: <div id="lon"><%= lon %></div>
+      <p></p>
+      Latitude: <div id="lat"><%= lat %></div>
+     </div>
+  
+  </body>
+</html>

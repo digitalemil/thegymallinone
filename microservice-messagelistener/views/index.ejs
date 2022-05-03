@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+   <script src="socket.io/socket.io.js"></script>
+	<script>
+		let socket= io();
+        socket.on('logs', function(msgs){
+            let html= "";
+            let keys= Object.keys(msgs);
+            keys.forEach(key => {
+                let msg= msgs[key]; 
+                html+= JSON.stringify(msg)+"<p></p>";
+            }) 
+            document.getElementById("logs").innerHTML= html;
+        });
+	</script>
+
+     <h1><%= title %></h1>
+    <a href="/app/home"><img id="img" class="icon"/></a>
+  
+    <div style="font-size: 20px;">
+      The last messages:
+      <p></p>
+      <div id="logs"></div>
+     </div>
+  </body>
+</html>
