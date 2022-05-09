@@ -3,13 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -32,22 +33,40 @@ func main() {
 	fmt.Println("Logger starting...")
 	InfoLogger.Println("Logger starting...")
 
-	http.HandleFunc("/", logit)
+	r := gin.Default()
+	r.Static("/public", "./public")
+	r.LoadHTMLGlob("templates/*")
+	r.GET("/index", home)
+	r.GET("/index.html", home)
+	r.GET("/home", home)
+	r.GET("/", home)
 
-	log.Fatal(http.ListenAndServe(os.Getenv("HOST")+":"+os.Getenv("PORT"), nil))
+	r.POST("/", func(c *gin.Context) {
+		jsonData, err := c.GetRawData()
+
+		if err != nil {
+			ErrorLogger.Println("No raw data: " + fmt.Sprint((err)))
+		}
+		logit(string(jsonData))
+	})
+	host := os.Getenv("HOST")
+	port := os.Getenv("PORT")
+
+	log.Fatal(r.Run(host + ":" + port))
 }
 
-func logit(rw http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		ErrorLogger.Println("Message JSON payload: " + string(body))
-		return
-	}
+func home(c *gin.Context) {
+	c.HTML(http.StatusOK, "home.tmpl", gin.H{
+		"title":       "Microservice Messagelogger",
+		"lastMessage": LastMessage,
+	})
+}
 
-	InfoLogger.Println("Message body: " + string(body))
+func logit(text string) {
+
+	InfoLogger.Println("Message body: " + text)
 	var payload interface{}
-	req.Body.Close()
-	err = json.Unmarshal(body, &payload)
+	err := json.Unmarshal([]byte(text), &payload)
 	if err != nil {
 		ErrorLogger.Println("Unmarshall error: " + fmt.Sprint((err)))
 		return
@@ -74,10 +93,9 @@ func execute(json map[string]interface{}) {
 	mt, _ := strconv.Atoi(os.Getenv("MINTIME"))
 	addon, _ := strconv.Atoi(os.Getenv("TIMEADDON"))
 
-	time.Sleep(time.Millisecond * time.Duration(int(mt+addon*int(rand.Float64()))))
-	InfoLogger.Println("Done...")
-}
+	now := time.Now().UnixMilli()
+	time.Sleep(time.Millisecond * time.Duration(int(mt+int(float64(addon)*rand.Float64()))))
+	after := time.Now().UnixMilli()
 
-func lastmessage(rw http.ResponseWriter, req *http.Request) {
-
+	InfoLogger.Println("Done... " + strconv.FormatInt(after-now, 10) + " ms.")
 }
