@@ -9,5 +9,5 @@ export DOMAIN=http://127.0.0.1:3034
 nodemon microservice-messagetransformer/bin/www &
 nodemon microservice-messagevalidator/bin/www &
 nodemon microservice-messagelistener/bin/www &
-nodemon microservice-ui/bin/www
+nodemon microservice-frontend/bin/www
 

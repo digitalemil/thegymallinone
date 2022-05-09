@@ -7,7 +7,7 @@ var logger = require('morgan');
 const session = require('express-session');
 const basicAuth = require('express-basic-auth');
 let darkmode= true;
-
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 var app = express();
 
@@ -128,6 +128,7 @@ function addTemplateVariables(req, res, next) {
 
 var indexRouter = require('./routes/index');
 var dataRouter = require('./routes/data');
+var uiRouter = require('./routes/ui');
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -136,6 +137,9 @@ app.use(function(req, res, next) {
 });
 app.use('/app', authRequired);
 app.use('/app/*', authRequired);
+app.use('/ui', authRequired);
+app.use('/ui/*', authRequired);
+app.use('/ui', uiRouter);
 app.use('/', indexRouter);
 app.use('/hr', indexRouter);
 
@@ -166,6 +170,23 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+uiRouter.get(
+  // Login url
+  '/auth/login',
+
+  // Save the url of the user's current page so the app can redirect back to
+  // it after authorization
+  (req, res, next) => {
+    if (req.query.return) {
+      req.session.oauth2return = req.query.return;
+    }
+    next();
+  },
+
+  // Start OAuth 2 flow using Passport.js
+  passport.authenticate('google', {scope: ['email', 'profile']})
+);
+
 indexRouter.get(
   // Login url
   '/auth/login',
@@ -182,6 +203,7 @@ indexRouter.get(
   // Start OAuth 2 flow using Passport.js
   passport.authenticate('google', {scope: ['email', 'profile']})
 );
+
 
 indexRouter.get(
   '/logout',(req, res, next) => {
@@ -201,8 +223,9 @@ indexRouter.get(
   
   // Redirect back to the original page, if any
   (req, res) => {
+    console.log("CALLBACK: "+ JSON.stringify(req.session.passport.user));
     let redirect = req.session.oauth2return || '/';
-    if(!"digitalemil@googlemail.com"==req.session.passport.user.email.value) {
+    if(! ("digitalemil@googlemail.com"===req.session.passport.user.email.value)) {
       redirect= "/nouser";
       console.log("User: "+JSON.stringify(req.session.passport.displayName)+" not allowed");
       delete req.session.passport;

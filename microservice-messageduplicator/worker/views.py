@@ -1,5 +1,5 @@
 import os
-import grequests
+import requests
 import sys
 import json
 from django.views.decorators.http import require_http_methods
@@ -22,12 +22,12 @@ def work(request):
   body = request.body.decode("utf-8")
   print("Got: " + body)
   sys.stderr.write("Got: "+body)
-  #data = json.loads(body)
-  #print("Obj: "+str(data.get("obj").get("zwei")))
-  urls = [
-    os.environ["OUT1"],
-    os.environ["OUT2"],
-  ]
-  rs = (grequests.post(u, data=body) for u in urls)
-  grequests.map(rs, False, None, errorfunction)
-  return HttpResponse("OK")
+  rs1 = requests.post(os.environ["OUT1"], data=body)
+  
+  rs2 = requests.post(os.environ["OUT2"], data=body)
+
+  s= 200
+  if rs1!= 200 or rs2!= 200:
+    s= 503
+
+  return HttpResponse("OK", status= s)

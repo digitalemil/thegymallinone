@@ -14,7 +14,7 @@ mvn -DskipTests=true package
 cd ..
 
 docker build --platform=linux/amd64 -t $DOCKERHUB_USER/$DOCKERHUB_REPO:thegym-allinone-v$VERSION .
-docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:thegym-allinone-v$VERSION 
+#docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:thegym-allinone-v$VERSION 
 #cd ..
 
 #rm Dockerfile.tmp

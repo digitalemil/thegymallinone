@@ -59,6 +59,7 @@ public class TheGym extends HttpServlet {
 		}
 		String json= appdef.replaceAll("'", "\"");
 		JSONObject jobj = null;
+		System.out.println("---\n"+json+"---");
 		jobj = new JSONObject(json);
 		fields= jobj.getJSONArray("fields");
 		for (int i = 0; i < fields.length(); i++) {

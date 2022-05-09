@@ -1,0 +1,124 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+
+	<title></title>
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHVxZZ0vJzpwlRcwtVQEVubP7WqduMt8s&v=3.exp&sensor=false"></script>
+<script>
+	let LOCATIONS = new Array();
+	let AUTOREFRESH = false;
+	let alllocs = "";
+	let autorefresh = false;
+	let markers= new Array();
+	let map;
+	let mapoptions;	
+	let iimap = new Array();
+	let marker;
+
+	function updateLocations() {
+		if (req.readyState == 4 && req.status == 200) {
+			alllocs = JSON.parse(req.responseText);
+			iimap = new Array(alllocs.locations.length);
+			for (let l = 0; l < alllocs.locations.length; l++) {
+				iimap[l] = {
+					center : new google.maps.LatLng(
+							alllocs.locations[l].latitude,
+							alllocs.locations[l].longitude),
+					n : Math.min(32, alllocs.locations[l].n) * 1000
+				};
+			}
+
+			for (let i = 0; i < markers.length; i++) {
+				markers[i].setMap(null);
+			}
+
+			for (let i = 0; i < iimap.length; i++) {
+				let myLatlng = new google.maps.LatLng(alllocs.locations[i].latitude,alllocs.locations[i].longitude);
+				
+				marker= new google.maps.Marker({
+   				 position: myLatlng,
+    			 title:""
+				});
+				marker.setMap(map);
+				markers[i]= marker;
+			}
+
+			setTimeout(hitDataUrl, 2000);
+		}
+	}
+
+	function hitDataUrl() {
+		if (window.XMLHttpRequest) {
+			try {
+				req = new XMLHttpRequest();
+			} catch (e) {
+				req = false;
+			}
+		} else {
+			if (window.ActiveXObject) {
+				try {
+					req = new ActiveXObject("Msxml2.XMLHTTP");
+				} catch (e) {
+					try {
+						req = new ActiveXObject("Microsoft.XMLHTTP");
+					} catch (e) {
+						req = false;
+					}
+				}
+			}
+		}
+		if (req) {
+			req.onreadystatechange = updateLocations;
+			req.open("GET", "mapdata", true);
+			req.send("");
+		} else {
+			alert("req== false");
+		}
+	}
+
+	
+	function initialize() {
+		let id = document.getElementById("all");
+		w = window.innerWidth;
+		h = window.innerHeight;
+		let perfcor = 0;
+		scale = Math.min(w / 1024, h / 640);
+		sX = w / 1024;
+		sY = h / 768;
+	
+		document.body.style.backgroundImage = "url('../images/thegym.jpg')";
+		
+		id = document.getElementById("map_canvas");
+		id.setAttribute("style", "position:absolute; top:"
+				+ ((128 * window.innerWidth / 1024) + 32 * sY) + "px; left:"
+				+ (512 * (1 - 0.7) * sX) + "px; width: " + (1024 * sX * 0.7-240)
+				+ "px; height: " + (768 * sY * 0.6) + "px;");
+
+		let z = Math.floor(1.5 * sX);
+		mapOptions = {
+			zoom : 4,
+			center : new google.maps.LatLng(44.7694,-106.969),
+	//		mapTypeId : google.maps.MapTypeId.SATELLITE
+		};
+
+		map = new google.maps.Map(document.getElementById('map_canvas'),
+				mapOptions);
+	//	map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+	}
+	
+	hitDataUrl();
+</script>
+</head>
+<body onload="initialize()">
+	<div id="all" width="100%" height="100%" style="position: absolute; top: 0px; left: 0px;">
+		<p>
+		<h2  style="top: 80px; font-size: 24px; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><%= name %></h2>
+		<div id="map_canvas"></div>
+	</div>
+	<script>
+		setTimeout(hitDataUrl, 2000);
+	</script>
+</body>
+</html>
+

@@ -7,13 +7,15 @@ global.user= "---";
 var passwd= require('../passwd.json');
 
 const client = require('prom-client');
+const axios = require("axios");
+
 
 let  prom_lasthr = new client.Gauge({ name: 'latest_hr', help: 'Latest HR' });
 let  prom_lastlon = new client.Gauge({ name: 'latest_longitude', help: 'Latest Longitude' });
 let  prom_lastlat= new client.Gauge({ name: 'latest_latitude', help: 'Latest Latitude' });
 
 
-router.all('/', function (req, res, next) {
+router.all('/', async function (req, res, next) {
     if(passwd.password!= req.query.password) {
         res.write("User "+req.user+" unauthorized.");
         res.end();
@@ -37,8 +39,56 @@ router.all('/', function (req, res, next) {
     obj.lat= global.lat;
     obj.user= req.query.user;
 
+
     io.emit("session", obj);
 
+    obj.heartrate = obj.hr;
+    obj.deviceid = obj.user;
+    obj.location = obj.lon + ":" + obj.lat;
+  
+    let d = new Date();
+    let day = d.getUTCDate();
+    let daystring = "" + day;
+  
+    if (day < 10)
+      daystring = "0" + daystring;
+    let month = d.getUTCMonth() + 1;
+    let monthstring = "" + month;
+    if (month < 10)
+      monthstring = "0" + monthstring;
+  
+    let hour = d.getUTCHours();
+    let hourstring = "" + hour;
+    if (hour < 10)
+      hourstring = "0" + hourstring;
+  
+    let minute = d.getUTCMinutes();
+    let minutestring = "" + minute;
+    if (minute < 10)
+      minutestring = "0" + minutestring;
+  
+    let second = d.getUTCSeconds() + d.getUTCMilliseconds() / 1000.0;
+    let secondstring = "" + second;
+    if (second < 10)
+      secondstring = "0" + secondstring
+  
+  
+    obj.event_timestamp = d.getFullYear() + "-" + monthstring + "-" + daystring + "T" + hourstring + ":" + minutestring + ":" + secondstring + "Z";
+    obj.id = d.getTime();
+    obj.color="0x80FFFFFF";
+    delete obj.lon;
+    delete obj.lat;
+    delete obj.hr;
+  
+    // Post to duplicator
+    //fields':[{'name':'heartrate','pivot':true,'type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','type':'Long','pivot':'false'},{'name':'location','type':'Location','pivot':'false'},{'name':'event_timestamp','type':'Date/time','pivot':'false'}]
+    try {
+      result = await axios.post(process.env.MESSAGE_DUPLICATOR, JSON.stringify(obj));
+    }
+    catch (err) {
+      console.log("Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
+    }
+  
     res.write("Thank you.\n");
     res.end();
   //res.render('home', { title: 'The Gym', hr:hr, lon:lon, lat:lat });

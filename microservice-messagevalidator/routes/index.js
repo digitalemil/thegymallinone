@@ -111,6 +111,7 @@ router.post('/', function(req, res, next) {
  let msg= req.body;
  lastmsg= msg;
  console.log("Validating: "+msg);
+ console.log("Validating: "+JSON.stringify(msg));
  
  let jsonmsg= null;
  console.log(msg);

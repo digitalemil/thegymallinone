@@ -12,24 +12,29 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'The Gym' });
 });
 
-/* GET Home */
-router.get('/app/home', function (req, res, next) {
-  res.render('home', { title: 'The Gym', user:global.user, hr:global.hr, lon:global.lon, lat:global.lat });
+router.get('/nouser', function (req, res, next) {
+  res.render('nouser', { title: 'The Gym' });
 });
 
-var passwd= require('../passwd.json');
+/* GET Home */
+router.get('/app/home', function (req, res, next) {
+  res.render('home', { title: 'The Gym', user: global.user, hr: global.hr, lon: global.lon, lat: global.lat });
+});
+
+var passwd = require('../passwd.json');
 
 router.get('hr'), function (req, res, next) {
-  if(passwd.password!= req.query.password) {
-      res.write("User "+req.user+" unauthorized.");
-      res.end();
-      return;
+  if (passwd.password != req.query.password) {
+    res.write("User " + req.user + " unauthorized.");
+    res.end();
+    return;
   }
-  let obj= new Object();
-    obj.hr= global.hr;
-    obj.lon= global.lon;
-    obj.lat= global.lat;
-    obj.user= global.user;
+  let obj = new Object();
+  obj.hr = global.hr;
+  obj.lon = global.lon;
+  obj.lat = global.lat;
+  obj.user = global.user;
   res.write(JSON.stringify(obj))
 }
+
 module.exports = router;

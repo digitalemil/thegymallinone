@@ -1,0 +1,72 @@
+INFO: 2022/05/04 11:04:24 logger.go:33: Logger starting...
+INFO: 2022/05/04 11:04:27 logger.go:46: Body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:04:27 logger.go:52: JSON payload: 
+INFO: 2022/05/04 11:04:28 logger.go:46: Body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:04:28 logger.go:52: JSON payload: 
+INFO: 2022/05/04 11:06:04 logger.go:33: Logger starting...
+INFO: 2022/05/04 11:06:06 logger.go:46: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+INFO: 2022/05/04 11:06:18 logger.go:46: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:06:18 logger.go:52: Message JSON payload: 
+INFO: 2022/05/04 11:08:45 logger.go:33: Logger starting...
+INFO: 2022/05/04 11:08:49 logger.go:46: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:08:49 logger.go:52: Message JSON payload: 
+INFO: 2022/05/04 11:08:53 logger.go:46: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+ERROR: 2022/05/04 11:08:53 logger.go:50: Message JSON payload: {"foo":"bar",wed wefewfewf  "hello":"1"}
+INFO: 2022/05/04 11:08:53 logger.go:52: Message JSON payload: 
+INFO: 2022/05/04 11:08:54 logger.go:46: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:08:54 logger.go:52: Message JSON payload: 
+INFO: 2022/05/04 11:11:26 logger.go:35: Logger starting...
+INFO: 2022/05/04 11:11:51 logger.go:48: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:11:51 logger.go:54: Message JSON payload: /
+INFO: 2022/05/04 11:13:05 logger.go:34: Logger starting...
+INFO: 2022/05/04 11:13:08 logger.go:47: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:13:08 logger.go:53: Message JSON payload: bar/
+INFO: 2022/05/04 11:13:34 logger.go:47: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:13:34 logger.go:53: Message JSON payload: bar/
+INFO: 2022/05/04 11:13:52 logger.go:34: Logger starting...
+INFO: 2022/05/04 11:13:53 logger.go:47: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:13:53 logger.go:53: Message JSON payload: bar/1
+INFO: 2022/05/04 11:13:59 logger.go:47: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+ERROR: 2022/05/04 11:13:59 logger.go:51: Message JSON payload: {"foo":"bar",wed wefewfewf  "hello":"1"}
+INFO: 2022/05/04 11:13:59 logger.go:53: Message JSON payload: /
+INFO: 2022/05/04 11:21:07 logger.go:34: Logger starting...
+INFO: 2022/05/04 11:21:10 logger.go:48: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:21:10 logger.go:54: Message JSON payload: map[foo:bar hello:1]
+INFO: 2022/05/04 11:24:34 logger.go:34: Logger starting...
+INFO: 2022/05/04 11:24:38 logger.go:48: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:24:38 logger.go:54: Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 11:24:38 logger.go:59: Message json payload: [123 34 102 111 111 34 58 34 98 97 114 34 44 34 104 101 108 108 111 34 58 34 49 34 125]
+INFO: 2022/05/04 11:25:42 logger.go:34: Logger starting...
+INFO: 2022/05/04 11:25:47 logger.go:48: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 11:25:47 logger.go:54: Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 11:25:47 logger.go:59: Message json payload: {"foo":"bar","hello":"1"}
+INFO: 2022/05/04 11:25:57 logger.go:48: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+INFO: 2022/05/04 11:26:11 logger.go:48: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+INFO: 2022/05/04 12:34:54 logger.go:30: Logger starting...
+INFO: 2022/05/04 12:35:20 logger.go:44: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 12:35:20 logger.go:49: Converting to json map.
+INFO: 2022/05/04 12:35:20 logger.go:51: Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:35:20 logger.go:52: Start marshalling
+INFO: 2022/05/04 12:35:20 logger.go:58: Marshakling done. Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:35:20 logger.go:66: Executing workload...
+INFO: 2022/05/04 12:35:20 logger.go:68: Done...
+INFO: 2022/05/04 12:35:20 logger.go:62: Message json payload: {"foo":"bar","hello":"1"}
+INFO: 2022/05/04 12:37:38 logger.go:30: Logger starting...
+INFO: 2022/05/04 12:37:47 logger.go:44: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 12:37:47 logger.go:52: Converting to json map.
+INFO: 2022/05/04 12:37:47 logger.go:54: Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:37:47 logger.go:55: Start marshalling
+INFO: 2022/05/04 12:37:47 logger.go:62: Marshalling done. Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:37:47 logger.go:70: Executing workload...
+INFO: 2022/05/04 12:37:47 logger.go:72: Done...
+INFO: 2022/05/04 12:37:47 logger.go:66: Message json payload: {"foo":"bar","hello":"1"}
+INFO: 2022/05/04 12:38:07 logger.go:44: Message body: {"foo":"bar",wed wefewfewf  "hello":"1"}
+ERROR: 2022/05/04 12:38:07 logger.go:49: Unmarshall error: invalid character 'w' looking for beginning of object key string
+INFO: 2022/05/04 12:38:20 logger.go:44: Message body: {"foo":"bar", "hello":"1"}
+INFO: 2022/05/04 12:38:20 logger.go:52: Converting to json map.
+INFO: 2022/05/04 12:38:20 logger.go:54: Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:38:20 logger.go:55: Start marshalling
+INFO: 2022/05/04 12:38:20 logger.go:62: Marshalling done. Message map: map[foo:bar hello:1]
+INFO: 2022/05/04 12:38:20 logger.go:70: Executing workload...
+INFO: 2022/05/04 12:38:20 logger.go:72: Done...
+INFO: 2022/05/04 12:38:20 logger.go:66: Message json payload: {"foo":"bar","hello":"1"}
