@@ -8,7 +8,7 @@ const session = require('express-session');
 const basicAuth = require('express-basic-auth');
 let darkmode= true;
 const { createProxyMiddleware } = require('http-proxy-middleware');
-
+var bodyParser = require('body-parser');
 var app = express();
 
 // Prometheus Client integration 
@@ -27,8 +27,8 @@ app.get('/metrics', async (_req, res) => {
 
 
 
-//let config= JSON.parse(process.env.CONFIG);
-let config= require('./config.json');
+let config= JSON.parse(process.env.CONFIG);
+//let config= require('./config.json');
 var passwd= require('./passwd.json');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -94,8 +94,9 @@ app.use(session(sessionConfig));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-app.use(express.json());
+app.use(bodyParser.text({type: '*/*'}));
+app.use(bodyParser.raw());
+//app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -138,7 +139,7 @@ app.use(function(req, res, next) {
 app.use('/app', authRequired);
 app.use('/app/*', authRequired);
 app.use('/ui', authRequired);
-app.use('/ui/*', authRequired);
+//app.use('/ui/*', authRequired);
 app.use('/ui', uiRouter);
 app.use('/', indexRouter);
 app.use('/hr', indexRouter);

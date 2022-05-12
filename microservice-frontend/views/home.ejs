@@ -8,7 +8,7 @@
     <script src="../socket.io/socket.io.js"></script>
 	<script>
 		let socket= io();
-    socket.on('session', function(msg){
+    socket.on('garmin', function(msg){
     let e= document.getElementById("hr");
     e.innerHTML= msg.hr;
     e= document.getElementById("lon");

@@ -12,7 +12,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3034');
+var port = normalizePort(process.env.LISTENERPORT || '3034');
 app.set('port', port);
 
 /**
@@ -26,7 +26,7 @@ io = require('socket.io')(server);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, 'localhost');
+server.listen(port, '0.0.0.0');
 server.on('error', onError);
 server.on('listening', onListening);
 

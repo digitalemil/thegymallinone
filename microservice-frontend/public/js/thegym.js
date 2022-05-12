@@ -58,11 +58,14 @@ function addToBucket(bucket, val) {
 }
 
 function processData(sessiondata) {
-	if( typeof thegym == "undefined")
+	if( typeof thegym == "undefined") {
+		console.log("thegym type undefined")
 		return;
-	
+	}
+
 	session = JSON.parse(sessiondata);
-    console.log(sessiondata);
+    
+	console.log(sessiondata);
 	for ( var i = 0; i < MAXWIDGETS; i++) {
 		if (i < session.users.length) {
 			try {

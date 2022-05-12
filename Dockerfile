@@ -25,7 +25,7 @@ COPY microservice-frontend/package.json /opt/app/microservice-frontend/
 RUN cd /opt/app/microservice-frontend; npm install
 
 COPY microservice-messagelogger /opt/app/microservice-messagelogger
-RUN cd /opt/app/microservice-messagelogger; go build logger.go
+RUN cd /opt/app/microservice-messagelogger; go get -u github.com/gin-gonic/gin; go build logger.go
 
 COPY microservice-messageduplicator /opt/app/microservice-messageduplicator
 

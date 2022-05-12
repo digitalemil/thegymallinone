@@ -93,9 +93,9 @@ func execute(json map[string]interface{}) {
 	mt, _ := strconv.Atoi(os.Getenv("MINTIME"))
 	addon, _ := strconv.Atoi(os.Getenv("TIMEADDON"))
 
-	now := time.Now().UnixMilli()
+	now := time.Now().UnixNano() / int64(time.Millisecond)
 	time.Sleep(time.Millisecond * time.Duration(int(mt+int(float64(addon)*rand.Float64()))))
-	after := time.Now().UnixMilli()
+	after := time.Now().UnixNano() / int64(time.Millisecond)
 
 	InfoLogger.Println("Done... " + strconv.FormatInt(after-now, 10) + " ms.")
 }

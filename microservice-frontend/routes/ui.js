@@ -68,7 +68,7 @@ async function getDataFromListeners() {
       hrdataMessageHandler(result.data);
     }
     emitData();
-    //setTimeout(getDataFromListeners, 500);
+    setTimeout(getDataFromListeners, 500);
     //span.finish();
   }
   catch (ex) {
@@ -256,6 +256,7 @@ router.post(['/model'], function (req, res, next) {
 
 
 router.get(['/model'], function (req, res, next) {
+  console.log("Get model: "+model)
   res.write(model);
   res.end();
 });
@@ -268,6 +269,7 @@ router.get(['/model.html', 'thegym/model/html'], function (req, res, next) {
 
 function emitData() {
   let d = sessionData();
+  console.log("Emitting: "+JSON.stringify(d))
   io.emit("session", d);
 };
 

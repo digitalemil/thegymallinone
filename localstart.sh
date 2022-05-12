@@ -4,10 +4,30 @@ export MESSAGE_VALIDATOR=http://127.0.0.1:3033
 export PMML_EVALUATOR=http://127.0.0.1:8080
 export LISTENER=http://127.0.0.1:3034
 export DOMAIN=http://127.0.0.1:3034
+export OUT1=http://127.0.0.1:3036
+export OUT2=$LISTENER
+export HOST=0.0.0.0
+export MINTIME=1000
+export TIMEADDON=1000
+export LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
 
 
 nodemon microservice-messagetransformer/bin/www &
 nodemon microservice-messagevalidator/bin/www &
 nodemon microservice-messagelistener/bin/www &
-nodemon microservice-frontend/bin/www
+cd /opt/app/microservice-messagelogger
+export PORT=3036
+./logger &
+cd ..
 
+cd microservice-Messageduplicator
+gunicorn --log-file=- --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
+cd ..
+
+sleep 4
+
+nodemon microservice-frontend/bin/www &
+
+sleep 4
+
+nodemon microservice-loadgenerator/bin/www

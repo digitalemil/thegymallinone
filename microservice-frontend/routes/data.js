@@ -39,12 +39,20 @@ router.all('/', async function (req, res, next) {
     obj.lat= global.lat;
     obj.user= req.query.user;
 
+    let eo = new Object();
+    eo.hr= global.hr;
+    eo.lon= global.lon;
+    eo.lat= global.lat;
+    eo.user= req.query.user;
 
-    io.emit("session", obj);
+    io.emit("garmin", eo);
 
-    obj.heartrate = obj.hr;
+    obj.heartrate = parseInt(obj.hr);
     obj.deviceid = obj.user;
-    obj.location = obj.lon + ":" + obj.lat;
+    obj.location = obj.lon + "," + obj.lat;
+    if(obj.location.includes("---")) {
+      obj.location="-122.957359,50.116322";
+    }
   
     let d = new Date();
     let day = d.getUTCDate();
@@ -76,6 +84,11 @@ router.all('/', async function (req, res, next) {
     obj.event_timestamp = d.getFullYear() + "-" + monthstring + "-" + daystring + "T" + hourstring + ":" + minutestring + ":" + secondstring + "Z";
     obj.id = d.getTime();
     obj.color="0x80FFFFFF";
+    obj.deviceid="245";
+
+    if(obj.user.length>8)
+      obj.user= obj.user.substring(0, 7)
+    
     delete obj.lon;
     delete obj.lat;
     delete obj.hr;
@@ -89,7 +102,7 @@ router.all('/', async function (req, res, next) {
       console.log("Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
     }
   
-    res.write("Thank you.\n");
+    res.write("OK.\n");
     res.end();
   //res.render('home', { title: 'The Gym', hr:hr, lon:lon, lat:lat });
 });

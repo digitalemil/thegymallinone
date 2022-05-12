@@ -10,7 +10,7 @@ export LISTENER=http://127.0.0.1:3034
 export DOMAIN=http://127.0.0.1:3034
 export OUT1=http://127.0.0.1:3036
 export OUT2=$LISTENER
-export HOST=127.0.0.1
+export HOST=0.0.0.0
 export MINTIME=1000
 export TIMEADDON=1000
 export LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
@@ -18,25 +18,26 @@ export LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
 
 mkdir -p /opt/app/logs/microservice-messagelogger
 
+/opt/tomcat/bin/catalina.sh start
+sleep 12
 node /opt/app/microservice-messagetransformer/bin/www &
 sleep 2
 node /opt/app/microservice-messagevalidator/bin/www &
-sleep 2
-/opt/tomcat/bin/catalina.sh start
 sleep 2
 node /opt/app/microservice-messagelistener/bin/www &
 sleep 2
 node /opt/app/microservice-frontend/bin/www &
 sleep 2
-node /opt/app/microservice-loadgenerator/bin/www &
-sleep 2
-
 cd /opt/app/microservice-messageduplicator
-gunicorn --log-file=- --bind 127.0.0.1:3037 MessageDuplicator.wsgi &
+gunicorn --log-file=- --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
 
 cd /opt/app/microservice-messagelogger
 export PORT=3036
-go run logger.go &
+./logger &
+
+#node /opt/app/microservice-loadgenerator/bin/www &
+sleep 2
+
 
 /bin/agent --config.file=/opt/app/agent-config.yaml 
 #tail -f /dev/null
