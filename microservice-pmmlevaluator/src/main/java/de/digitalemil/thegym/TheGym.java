@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import org.xml.sax.SAXException;
 import java.net.URLDecoder;
 import java.io.PrintWriter;
+import io.prometheus.client.hotspot.DefaultExports;
 
 /**
  */
@@ -50,6 +51,7 @@ public class TheGym extends HttpServlet {
 	@Override
 	public void init(ServletConfig cfg) throws ServletException {
 		super.init(cfg);
+		DefaultExports.initialize();
 		System.out.println("Pivot field: "+pivotfieldname);
 		String appdef= "";
 		Map<String, String> env = System.getenv();

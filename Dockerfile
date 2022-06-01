@@ -1,6 +1,6 @@
 FROM digitalemil/thesimplegym:baseimg-thegym-allinone-v0.0.1
 
-COPY microservice-pmmlevaluator/target/PMMLEvalService-0.0.1.war /opt/tomcat/webapps/ROOT.war
+COPY microservice-pmmlevaluator/target/PMMLEvalService-0.0.1.war /opt/app/microservice-pmmlevaluator/tomcat/webapps/ROOT.war
 
 COPY microservice-loadgenerator /opt/app/microservice-loadgenerator
 RUN cd /opt/app/microservice-loadgenerator; npm install
@@ -25,7 +25,7 @@ COPY microservice-frontend/package.json /opt/app/microservice-frontend/
 RUN cd /opt/app/microservice-frontend; npm install
 
 COPY microservice-messagelogger /opt/app/microservice-messagelogger
-RUN cd /opt/app/microservice-messagelogger; go get -u github.com/gin-gonic/gin; go build logger.go
+RUN cd /opt/app/microservice-messagelogger; go get github.com/prometheus/client_golang/prometheus; go get github.com/prometheus/client_golang/prometheus/promauto; go get github.com/prometheus/client_golang/prometheus/promhttp; go get -u github.com/gin-gonic/gin; go build logger.go
 
 COPY microservice-messageduplicator /opt/app/microservice-messageduplicator
 

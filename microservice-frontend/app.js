@@ -1,6 +1,9 @@
 
 var createError = require('http-errors');
 var express = require('express');
+var winston = require('winston'),
+    expressWinston = require('express-winston');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -24,11 +27,38 @@ app.get('/metrics', async (_req, res) => {
   }
 });
 
+const wlogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.simple(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    //
+    // - Write all logs with importance level of `error` or less to `error.log`
+    // - Write all logs with importance level of `info` or less to `combined.log`
+    //
+    
+    new winston.transports.Stream({
+      stream: process.stderr,
+      level: 'info',
+    }),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
+const loggermw = expressWinston.logger({
+  winstonInstance: wlogger,
+  meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+  msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+  expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+  colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+  ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
+})
+global.logger= wlogger;
+wlogger.log("info", "mylogger")
+app.use(loggermw);
 
-
-
-let config= JSON.parse(process.env.CONFIG);
-//let config= require('./config.json');
+//let config= JSON.parse(process.env.CONFIG);
+let config= require('./config.json');
 var passwd= require('./passwd.json');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -138,7 +168,7 @@ app.use(function(req, res, next) {
 });
 app.use('/app', authRequired);
 app.use('/app/*', authRequired);
-app.use('/ui', authRequired);
+//app.use('/ui', authRequired);
 //app.use('/ui/*', authRequired);
 app.use('/ui', uiRouter);
 app.use('/', indexRouter);

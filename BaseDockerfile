@@ -9,7 +9,8 @@ RUN apt-get install -y openjdk-8-jdk
 RUN apt install -y python3 nodejs npm maven curl golang-go procps python3-pip libffi-dev git
 RUN pip3 install gunicorn django grequests
 
-RUN curl -o /opt/tomcat9.tgz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz
-RUN cd /opt; tar xzvf /opt/tomcat9.tgz; ln -s /opt/apache-tomcat-* /opt/tomcat; rm -fr /opt/tomcat/webapps/*
-COPY server.xml /opt/tomcat/conf
+RUN curl -o /tmp/tomcat9.tgz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz
+RUN mkdir -p /opt/app/microservice-pmmlevaluator
+RUN cd /opt/app/microservice-pmmlevaluator; tar xzvf /tmp/tomcat9.tgz; ln -s /opt/app/microservice-pmmlevaluator/apache-tomcat-* /opt/app/microservice-pmmlevaluator/tomcat; rm -fr /opt/app/microservice-pmmlevaluator/tomcat/webapps/*
+COPY server.xml /opt/app/microservice-pmmlevaluator/tomcat/conf
 ENTRYPOINT tail -f /dev/null

@@ -22,8 +22,8 @@ def work(request):
   body = request.body.decode("utf-8")
   print("Got: " + body)
   headers = {'Content-type': 'application/json'}
-  rs1 = requests.post(os.environ["OUT1"], data=body, headers=headers)
-  rs2 = requests.post(os.environ["OUT2"], data=body, headers=headers)
+  rs1 = requests.post(os.environ["DUPPLICATOR_OUT1"], data=body, headers=headers)
+  rs2 = requests.post(os.environ["DUPPLICATOR_OUT2"], data=body, headers=headers)
 
   s= 200
   if rs1.status_code!= 200 or rs2.status_code!= 200:

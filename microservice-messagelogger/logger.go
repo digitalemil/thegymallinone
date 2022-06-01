@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -22,7 +23,7 @@ var (
 
 func main() {
 
-	file, err := os.OpenFile(os.Getenv("LOGFILE"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(os.Getenv("LOGGER_LOGFILE"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,8 +50,9 @@ func main() {
 		}
 		logit(string(jsonData))
 	})
-	host := os.Getenv("HOST")
-	port := os.Getenv("PORT")
+	r.GET("/metrics", prometheusHandler())
+	host := os.Getenv("LOGGER_HOST")
+	port := os.Getenv("LOGGER_PORT")
 
 	log.Fatal(r.Run(host + ":" + port))
 }
@@ -90,12 +92,20 @@ func logit(text string) {
 
 func execute(json map[string]interface{}) {
 	InfoLogger.Println("Executing workload...")
-	mt, _ := strconv.Atoi(os.Getenv("MINTIME"))
-	addon, _ := strconv.Atoi(os.Getenv("TIMEADDON"))
+	mt, _ := strconv.Atoi(os.Getenv("LOGGER_MINTIME"))
+	addon, _ := strconv.Atoi(os.Getenv("LOGGER_TIMEADDON"))
 
 	now := time.Now().UnixNano() / int64(time.Millisecond)
 	time.Sleep(time.Millisecond * time.Duration(int(mt+int(float64(addon)*rand.Float64()))))
 	after := time.Now().UnixNano() / int64(time.Millisecond)
 
 	InfoLogger.Println("Done... " + strconv.FormatInt(after-now, 10) + " ms.")
+}
+
+func prometheusHandler() gin.HandlerFunc {
+	h := promhttp.Handler()
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }

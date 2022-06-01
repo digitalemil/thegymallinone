@@ -14,6 +14,16 @@
 			<param-value>false</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<description></description>
+		<display-name>TheGymMetrics</display-name>
+		<servlet-name>MetricsServlet</servlet-name>
+		<servlet-class>io.prometheus.client.exporter.MetricsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MetricsServlet</servlet-name>
+		<url-pattern>/metrics</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>TheGym</servlet-name>
 		<url-pattern>/</url-pattern>

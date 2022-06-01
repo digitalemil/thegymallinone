@@ -26,14 +26,14 @@ io = new Server(server);
 
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  global.logger.log("info", 'A user connected...');
 });
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-console.log("Listening on port: "+port)
+global.logger.log("info", "Listening on port: "+port)
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

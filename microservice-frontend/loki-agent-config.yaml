@@ -1,0 +1,106 @@
+integrations:
+  node_exporter:
+    enabled: true
+    metric_relabel_configs:
+      - action: keep
+        regex: node_load1|node_filesystem_avail_bytes|node_uname_info|node_cpu_seconds_total|node_memory_internal_bytes|node_network_receive_packets_total|node_network_receive_errs_total|node_memory_MemAvailable_bytes|node_network_transmit_drop_total|node_network_receive_bytes_total|node_disk_written_bytes_total|node_disk_io_time_seconds_total|node_memory_wired_bytes|node_memory_Cached_bytes|node_load15|node_memory_total_bytes|node_filesystem_files_free|node_memory_Buffers_bytes|node_memory_MemFree_bytes|node_filesystem_size_bytes|node_network_transmit_packets_total|node_network_transmit_errs_total|node_textfile_scrape_error|node_disk_io_time_weighted_seconds_total|node_memory_purgeable_bytes|node_network_transmit_bytes_total|node_memory_MemTotal_bytes|node_network_receive_drop_total|node_memory_Slab_bytes|node_load5|node_memory_compressed_bytes|node_disk_read_bytes_total|node_filesystem_readonly|node_filesystem_files|node_vmstat_pgmajfault
+        source_labels:
+          - __name__
+    relabel_configs:
+      - replacement: $(hostname)
+        source_labels:
+          - agent_hostname
+        target_label: instance
+      - replacement: integrations/macos-node
+        source_labels:
+          - agent_hostname
+        target_label: job
+  prometheus_remote_write:
+    - basic_auth:
+        password: eyJrIjoiOWFiMGQxZDUxOTdlMWQxYTg4OWVkN2QxMDY1YmNiN2RiZTI2NWNiYyIsIm4iOiJzdGFjay0zNjU1MjEtZWFzeXN0YXJ0LXByb20tcHVibGlzaGVyIiwiaWQiOjYyNjkwN30=
+        username: 431514
+      url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+logs:
+  configs:
+    - clients:
+        - basic_auth:
+            password: eyJrIjoiOWFiMGQxZDUxOTdlMWQxYTg4OWVkN2QxMDY1YmNiN2RiZTI2NWNiYyIsIm4iOiJzdGFjay0zNjU1MjEtZWFzeXN0YXJ0LXByb20tcHVibGlzaGVyIiwiaWQiOjYyNjkwN30=
+            username: 214727
+          url: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
+      name: integrations
+      positions:
+        filename: /tmp/positions.yaml
+      scrape_configs:
+        - job_name: integrations/node_exporter_direct_scrape
+          pipeline_stages:
+            - multiline:
+                firstline: ^([\w]{3} )?[\w]{3} +[\d]+ [\d]+:[\d]+:[\d]+|[\w]{4}-[\w]{2}-[\w]{2}
+                  [\w]{2}:[\w]{2}:[\w]{2}(?:[+-][\w]{2})?
+            - regex:
+                expression: (?P<timestamp>([\w]{3} )?[\w]{3} +[\d]+
+                  [\d]+:[\d]+:[\d]+|[\w]{4}-[\w]{2}-[\w]{2}
+                  [\w]{2}:[\w]{2}:[\w]{2}(?:[+-][\w]{2})?) (?P<hostname>\S+)
+                  (?P<sender>.+?)\[(?P<pid>\d+)\]:? (?P<message>(?s:.*))$
+            - labels:
+                ? hostname
+                ? pid
+                ? sender
+            - match:
+                selector: '{sender!="", pid!=""}'
+                stages:
+                  - template:
+                      source: message
+                      template: "{{.sender }}[{{.pid}}]: {{ .message }}"
+                  - labeldrop:
+                      - pid
+                  - output:
+                      source: message
+          static_configs:
+            - labels:
+                __path__: /var/log/*.log
+                instance: $(hostname)
+                job: integrations/macos-node
+              targets:
+                - localhost
+        - job_name: thegym-mask-sensitive
+          pipeline_stages:
+          - replace:
+              expression: '(name\\\":\\\"[a-zA-Z0-9]*\\\")'
+              replace: 'name\":\"***\"'
+          static_configs:
+          - targets:
+             - localhost
+            labels:
+              __path__: /Users/emil/thesimplegym/microservice-frontend/*.log
+              app: thegym
+              sensitive: "false"
+        - job_name: thegym-sensitive
+          pipeline_stages:
+          - labels:
+              app: "thygym"
+          - match:
+              selector: '{app="thegym"} !~ "name"'
+              action: drop
+          static_configs:
+          - targets:
+             - localhost
+            labels:
+              __path__: /Users/emil/thesimplegym/microservice-frontend/*.log
+              app: thegym
+              sensitive: "true"
+
+      target_config:
+        sync_period: 10s
+metrics:
+  configs:
+    - name: integrations
+      remote_write:
+        - basic_auth:
+            password: eyJrIjoiOWFiMGQxZDUxOTdlMWQxYTg4OWVkN2QxMDY1YmNiN2RiZTI2NWNiYyIsIm4iOiJzdGFjay0zNjU1MjEtZWFzeXN0YXJ0LXByb20tcHVibGlzaGVyIiwiaWQiOjYyNjkwN30=
+            username: 431514
+          url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+  global:
+    scrape_interval: 60s
+  wal_directory: /tmp/grafana-agent-wal
+server:
+  http_listen_port: 12345

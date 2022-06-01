@@ -99,7 +99,7 @@ router.all('/', async function (req, res, next) {
       result = await axios.post(process.env.MESSAGE_DUPLICATOR, JSON.stringify(obj));
     }
     catch (err) {
-      console.log("Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
+      global.logger.log("Error", "Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
     }
   
     res.write("OK.\n");

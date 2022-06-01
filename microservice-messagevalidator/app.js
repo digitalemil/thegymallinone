@@ -42,6 +42,19 @@ initTracer("messagevalidator");
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Prometheus Client integration 
+const prom_client = require('prom-client');
+const register = prom_client.register;
+prom_client.collectDefaultMetrics({ register });
+app.get('/metrics', async (_req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());  
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
