@@ -77,7 +77,7 @@ logs:
         - job_name: thegym-sensitive
           pipeline_stages:
           - labels:
-              app: "thygym"
+              app: "thegym"
           - match:
               selector: '{app="thegym"} !~ "name"'
               action: drop

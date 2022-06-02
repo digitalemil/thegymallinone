@@ -72,7 +72,7 @@ async function getDataFromListeners() {
       hrdataMessageHandler(result.data);
     }
     emitData();
-    setTimeout(getDataFromListeners, 500);
+    setTimeout(getDataFromListeners, 2000);
     //span.finish();
   }
   catch (ex) {
