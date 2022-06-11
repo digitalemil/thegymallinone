@@ -10,8 +10,8 @@ export DUPPLICATOR_OUT1=http://127.0.0.1:3036
 export DUPPLICATOR_OUT2=$LISTENER
 export LOGGER_HOST=0.0.0.0
 export LOGGER_PORT=3036
-export LOGGER_MINTIME=1000
-export LOGGER_TIMEADDON=1000
+export LOGGER_MINTIME=1
+export LOGGER_TIMEADDON=8
 export LOGGER_LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
 export LOGFOLDER=/opt/app/logs
 export DUPPLICATOR_OUT1=$MESSAGE_VALIDATOR
@@ -35,7 +35,8 @@ node /opt/app/microservice-messagelistener/bin/www &
 sleep 2
 node /opt/app/microservice-frontend/bin/www &
 sleep 2
-cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --log-file=/opt/app/logs/microservice-messageduplicator/gunicorn.log --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
+#cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
+cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.py runserver 0.0.0.0:3037 &
 sleep 2
 cd /opt/app/microservice-messagelogger; ./logger &
 

@@ -143,6 +143,11 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.getenv('LOGFOLDER', './')+'/microservice-messageduplicator/debug.log',
         },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.getenv('LOGFOLDER', './')+'/microservice-messageduplicator/info.log',
+        },
     },
     'loggers': {
         'django': {
@@ -150,5 +155,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        '': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
     },
 }

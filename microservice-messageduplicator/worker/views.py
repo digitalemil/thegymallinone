@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 import logging
-logger = logging.getLogger('logger')
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 from django.http import HttpResponse
