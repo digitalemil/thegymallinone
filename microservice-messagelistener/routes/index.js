@@ -38,7 +38,7 @@ async function addEvaluatedMessage(msg) {
 async function validate(msg) {
   let result= "";
   try {
-    result= await axios.post(process.env.MESSAGE_VALIDATOR, msg);
+    result= await axios.post(process.env.MESSAGE_DUPLICATOR, msg);
   }
   catch(err) {
     global.logger.log("error", "Message validation failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_VALIDATOR);   

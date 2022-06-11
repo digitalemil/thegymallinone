@@ -14,6 +14,8 @@ export LOGGER_MINTIME=1000
 export LOGGER_TIMEADDON=1000
 export LOGGER_LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
 export LOGFOLDER=/opt/app/logs
+export DUPPLICATOR_OUT1=$MESSAGE_VALIDATOR
+export DUPPLICATOR_OUT2=http://127.0.0.1:$LOGGER_PORT
 
 mkdir -p /opt/app/logs/microservice-messagelistener
 mkdir -p /opt/app/logs/microservice-messagetransformer
