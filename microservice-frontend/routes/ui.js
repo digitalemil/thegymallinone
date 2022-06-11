@@ -63,12 +63,12 @@ async function getDataFromListeners() {
           result = await axios.get(h+p);
       }
       catch (err) {
-        console.log("Can't get data from Listener: " + (h+p) + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        global.logger.log("error","Can't get data from Listener: " + (h+p) + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
         continue;
       }
       if (result.status != 200)
         continue;
-      console.log("processing listener: "+i)
+        global.logger.log("error", "Error processing listener: "+i)
       hrdataMessageHandler(result.data);
     }
     emitData();
@@ -96,12 +96,6 @@ function hrdataMessageHandler(msgs) {
   global.logger.log("info", "Handling: "+msgs);
   try {
     Object.keys(msgs).forEach(user=> {
-      //  if(messages[user]!= undefined)
-     //   console.log(messages[user]); 
-     //   console.log(msgs[user]);
-     //   console.log(Date.parse(msgs[user].event_timestamp))
-     //   if(messages[user]!= undefined)
-     //       console.log(Date.parse(messages[user].event_timestamp))
       if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp)) {
         addMessage(user, msgs[user]);      
         global.logger.log("info", "Added msg: "+JSON.stringify(msgs[user]));   
@@ -113,7 +107,7 @@ function hrdataMessageHandler(msgs) {
     })
   }
   catch (err) {
-    console.log(err + " " + msgs);
+    global.logger.log("error", err + " " + msgs);
   }
 };
 
@@ -160,7 +154,7 @@ router.get('/1000messages.html', function (req, res, next) {
 
 router.get(['/setlisteners'], function (req, res, next) {
   nlisteners= parseInt(req.query.nl);
-  console.log("Listeners set to: "+nlisteners);
+  global.logger.log("info", "Listeners set to: "+nlisteners);
   res.render('uihome', { table: appdef.table, keyspace: appdef.keyspace });
 });
 
@@ -263,7 +257,7 @@ router.post(['/model'], function (req, res, next) {
 
 
 router.get(['/model'], function (req, res, next) {
-  console.log("Get model: "+model)
+  global.logger.log("info", "Get model: "+model)
   res.write(model);
   res.end();
 });
@@ -308,7 +302,7 @@ function sessionData() {
       }
     }
     catch (ex) {
-      console.log(ex);
+      global.logger.log("error", ex.toString());
     }
 
     let color = messages[key].color;

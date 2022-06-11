@@ -95,13 +95,24 @@ router.all('/', async function (req, res, next) {
   
     // Post to duplicator
     //fields':[{'name':'heartrate','pivot':true,'type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','type':'Long','pivot':'false'},{'name':'location','type':'Location','pivot':'false'},{'name':'event_timestamp','type':'Date/time','pivot':'false'}]
+   /*
     try {
       result = await axios.post(process.env.MESSAGE_DUPLICATOR, JSON.stringify(obj));
     }
     catch (err) {
       global.logger.log("Error", "Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
     }
-  
+  */
+    
+    try {
+      result = await axios.post(process.env.LISTENER, JSON.stringify(obj));
+      global.logger.log("info", "Sent message to Listener: "+JSON.stringify(obj));
+ 
+    }
+    catch (err) {
+      global.logger.log("error", "Can't post data to Listener " + process.env.LISTENER + " " + JSON.stringify(obj)+ " "+err);
+    }
+ 
     res.write("OK.\n");
     res.end();
   //res.render('home', { title: 'The Gym', hr:hr, lon:lon, lat:lat });
