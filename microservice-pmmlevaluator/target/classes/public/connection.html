@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title></title>
+
+</head>
+
+<body class="body">
+	<div id="alldiv" style="text-align: right;">
+		<div id="text">
+			<p>
+			<table>
+				<tr>
+					<td>
+						<div class="table">Hostname/IP:</div>
+					</td>
+					<td style="text-align: right; width: 50%;" colspan=75%>
+						<input id='ip' class="form-control" style="width: 100%;" type='text' value='127.0.0.1'></input>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="table">Port:</div>
+					</td>
+					<td style="text-align: right; width: 50%">
+						<input id='port' class="form-control" style="width: 100%;" type='text' value='5433'></input>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="table">DB Name:</div>
+					</td>
+					<td style="text-align: right; width: 50%">
+						<input id='dbname' class="form-control" style="width: 100%;" type='text' value='testdb'></input>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="table">User:</div>
+					</td>
+					<td style="text-align: right; width: 50%">
+						<input id='user' class="form-control" style="width: 100%;" type='text' value='yugabyte'></input>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="table">Password:</div>
+					</td>
+					<td style="text-align: right; width: 50%">
+						<input id='password' class="form-control" style="width: 100%;" type='password'
+							value='yugabyte'></input>
+					</td>
+				</tr>
+
+
+				<tr>
+
+					<td>
+					</td>
+					<td style="text-align: right; width: 50%">
+						<button class="btn" onclick="doMySubmit()">Create Datasource</button>
+					</td>
+
+				</tr>
+
+			</table>
+		</div>
+	</div>
+	<script>
+		function doMySubmit() {
+			var ip = document.getElementById("ip").value;
+			var port = document.getElementById("port").value;
+			var dbname = document.getElementById("dbname").value;
+			var user = document.getElementById("user").value;
+			var password = document.getElementById("password").value;
+
+			json = '{ "ip":"' + ip + '"' + ', "port":"' + port + '"' + ', "dbname":"' + dbname + '"' + ', "user":"' + user + '"' + ', "password":"' + password + '"}';
+
+			postJSON(json);
+		}
+
+		function postJSON(json) {
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = jsonSent;
+			req.open("POST", "datasource", true);
+			req.setRequestHeader("Content-type", "application/json");
+			req.send(json);
+		}
+
+		function jsonSent() {
+			console.log("JSON sent: " + json);
+		}
+	</script>
+
+</body>
+
+</html>

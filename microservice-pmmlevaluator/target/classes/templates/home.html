@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>The Gym</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+</head>
+<body>
+    <h1>The Gym PMML Evaluator</h1>
+    <img id="img" class="icon"/>
+    <p th:text="${name} + '.'" />
+  
+    <div style="font-size: 20px;">
+        Latest Message: <p th:text="${message}" />
+        Latest Heartrate: <p th:text="${hr}" />
+        Latest Result: <p th:text="${result}" />
+    </div>
+</body>
+</html>

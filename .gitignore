@@ -4,5 +4,5 @@
 */appengine-config.json
 */local-config.json
 */node_modules
-
+./microservice-frontend/*.log
 

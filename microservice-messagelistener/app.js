@@ -7,7 +7,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-console.log("Microservice Message Listener starting.")
+var winston = require('winston'),
+    expressWinston = require('express-winston');
+
 var index = require('./routes/index');
 
 
@@ -55,6 +57,36 @@ app.get('/metrics', async (_req, res) => {
     res.status(500).end(err);
   }
 });
+const wlogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.simple(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    //
+    // - Write all logs with importance level of `error` or less to `error.log`
+    // - Write all logs with importance level of `info` or less to `combined.log`
+    //
+    
+    new winston.transports.Stream({
+      stream: process.stderr,
+      level: 'info',
+    }),
+    new winston.transports.File({ filename: process.env.LOGFOLDER+'/microservice-messagelistener/error.log', level: 'error' }),
+    new winston.transports.File({ filename: process.env.LOGFOLDER+'/microservice-messagelistener/combined.log' }),
+  ],
+});
+const loggermw = expressWinston.logger({
+  winstonInstance: wlogger,
+  meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+  msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+  expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+  colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+  ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
+})
+global.logger= wlogger;
+
+wlogger.log("info", "Microservice Message Listener starting.")
+app.use(loggermw);
 
 
 // uncomment after placing your favicon in /public

@@ -104,3 +104,24 @@ metrics:
   wal_directory: /tmp/grafana-agent-wal
 server:
   http_listen_port: 12345
+traces:
+  configs:
+  - name: default
+    remote_write:
+      - endpoint: tempo-eu-west-0.grafana.net:443
+        basic_auth:
+          username: 155402
+          password: eyJrIjoiODRhMDg5ODNhYjAzZjJjODRjODZjZjY4ZDRlNGU4MTVlYzM4ZjgwYSIsIm4iOiJ0aGVneW10cmFjZXNrZXkiLCJpZCI6NTk2NjUxfQ==
+receivers:
+  jaeger:
+    protocols:
+      grpc:
+      thrift_binary:
+      thrift_compact:
+      thrift_http:
+  zipkin:
+  otlp:
+    protocols:
+      http:
+      grpc:
+  opencensus:

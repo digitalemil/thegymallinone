@@ -41,8 +41,8 @@ const wlogger = winston.createLogger({
       stream: process.stderr,
       level: 'info',
     }),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.File({ filename: process.env.LOGFOLDER+'/microservice-frontend/error.log', level: 'error' }),
+    new winston.transports.File({ filename: process.env.LOGFOLDER+'/microservice-frontend/combined.log' }),
   ],
 });
 const loggermw = expressWinston.logger({
@@ -54,11 +54,11 @@ const loggermw = expressWinston.logger({
   ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
 })
 global.logger= wlogger;
-wlogger.log("info", "mylogger")
+wlogger.log("info", "Starting microservice-frontend")
 app.use(loggermw);
 
-//let config= JSON.parse(process.env.CONFIG);
-let config= require('./config.json');
+let config= JSON.parse(process.env.CONFIG);
+//let config= require('./config.json');
 var passwd= require('./passwd.json');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -168,8 +168,8 @@ app.use(function(req, res, next) {
 });
 app.use('/app', authRequired);
 app.use('/app/*', authRequired);
-//app.use('/ui', authRequired);
-//app.use('/ui/*', authRequired);
+app.use('/ui', authRequired);
+app.use('/ui/*', authRequired);
 app.use('/ui', uiRouter);
 app.use('/', indexRouter);
 app.use('/hr', indexRouter);

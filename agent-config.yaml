@@ -8,14 +8,59 @@ logs:
   configs:
     - clients:
         - basic_auth:
-            password: eyJrIjoiOTI2M2FjNzBiYzE5ZWYwZGIyZTQ5NzIzZGNiZWI4Yzk4YTBhMGYwMiIsIm4iOiJkaWdpdGFsZW1pbC1lYXN5c3RhcnQtcHJvbS1wdWJsaXNoZXIiLCJpZCI6NTk2NjUxfQ==
+            password: eyJrIjoiYzE5OTViMjJlZmYxZWVkZTMwZjBkOWIzYjQzNTcyNjU1YmZhZWY0MyIsIm4iOiJ0aGVneW0tbG9ncyIsImlkIjo1OTY2NTF9
             username: 158892
-          url: https://logs-prod-eu-west-0.grafana.net/api/prom/push
+          url: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
       name: integrations
       positions:
         filename: /tmp/positions.yaml
       target_config:
         sync_period: 10s
+      scrape_configs:
+        - job_name: thegym/logs
+          static_configs:
+            - labels:
+                __path__: /opt/app/logs/microservice-pmmlevaluator/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-pmmlevaluator
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-frontend/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-frontend
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messagelistener/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messagelistener
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messagetransformer/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messagetransformer
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messagevalidator/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messagevalidator
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messagelogger/*.txt
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messagelogger
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messageduplicator/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messageduplicator
+              targets:
+                - localhost
 metrics:
   configs:
     - name: integrations
@@ -27,15 +72,56 @@ metrics:
       scrape_configs:
         - job_name: integrations/nodejs
           static_configs:
-            - targets: ['thegym.theblackapp.de', '127.0.0.1:3032', '127.0.0.1:3033', '127.0.0.1:3034',]
+            - targets: ['thegym.theblackapp.de']
+            - labels:
+                microservice: "frontend"
+        - job_name: messagetransformer
+          static_configs:
+            - targets: ['127.0.0.1:3032']
+            - labels:
+                microservice: "messagetransformer"      
+        - job_name: messagevalidator
+          static_configs:
+            - targets: ['127.0.0.1:3033']
+            - labels:
+                microservice: "messagevalidator"
+        - job_name: messagelistener
+          static_configs:
+            - targets: ['127.0.0.1:3034']
+            - labels:
+                microservice: "messagelistener"        
         - job_name: golang-integration
           static_configs:
             - targets: ['127.0.0.1:3036']
-        - job_name: jvm-integration
+            - labels:
+                microservice: "messagelogger"
+        - job_name: integrations/spring-boot
+          metrics_path: /actuator/prometheus
           static_configs:
             - targets: ['127.0.0.1:8080']
+            - labels:
+                microservice: "pmmlevaluator"
+        - job_name: integrations/python-django
+          metrics_path: /metrics
+          static_configs:
+            - targets: ['127.0.0.1:3037']
+            - labels:
+                microservice: "messageduplicator"
   global:
     scrape_interval: 10s
   wal_directory: /tmp/grafana-agent-wal
+traces:
+  configs:
+  - name: default
+    remote_write:
+      - endpoint: tempo-eu-west-0.grafana.net:443
+        basic_auth:
+          username: 155402
+          password: eyJrIjoiODBjYWE4MGM2MDk4NmY0NWQ1NDU5ZGZiMDc2ZjVmYzg1OTYxNjAzZCIsIm4iOiJ0aGVneW0tdHJhY2VzIiwiaWQiOjU5NjY1MX0=
+    receivers:
+      otlp:
+        protocols:
+          http:
+          grpc:
 server:
   http_listen_port: 12345

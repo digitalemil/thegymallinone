@@ -1,0 +1,1 @@
+docker run -p 3000:3000 -e K_SERVICE=MacOS -e CONFIG='{"OAUTH2_CLIENT_ID": "510682337906-fqud8bpsm0sifcacsvacqd7ff1pc8kes.apps.googleusercontent.com","OAUTH2_CLIENT_SECRET": "Pk0WiJ7X-YVnzkw-U6ljeKbD","OAUTH2_CALLBACK": "http://localhost:3000/auth/google/callback"}' eu.gcr.io/thegym-263112/thegym-allinone-v0.0.1:latest

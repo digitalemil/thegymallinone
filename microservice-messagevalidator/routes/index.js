@@ -18,9 +18,8 @@ let types= new Array();
 for(var i= 0; i< appdef.fields.length; i++) {
   fields[i] = appdef.fields[i].name;
   types[i] = appdef.fields[i].type;
-  console.log("field: "+fields[i]+" "+i);
 }
-console.log(JSON.stringify(fields));
+global.logger.log("info", "Fields: "+JSON.stringify(fields));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -89,19 +88,19 @@ function sendError(res, w) {
   res.statusCode= 400;
 
   if(w== 0) {
-    console.log("Can't convert to json.");
+    global.logger.log("error","Can't convert to json.");
     laststatus=res.statusCode+" "+"Can't convert to json.";
   }
   if(w== 1) {
-    console.log("Number of fields does not match.");
+    global.logger.log("error","Number of fields does not match.");
     laststatus=res.statusCode+" "+"Number of fields does not match.";
   }
   if(w== 2) {
-    console.log("Field not found.");
+    global.logger.log("error","Field not found.");
     laststatus=res.statusCode+" "+"Field not found.";
   }
   if(w== 3) {
-    console.log("Content does not match type.");
+    global.logger.log("error","Content does not match type.");
     laststatus=res.statusCode+" "+"Content does not match type.";
   }
    res.end();
@@ -110,22 +109,21 @@ function sendError(res, w) {
 router.post('/', function(req, res, next) {  
  let msg= req.body;
  lastmsg= msg;
- console.log("Validating: "+msg);
- console.log("Validating: "+JSON.stringify(msg));
+ global.logger.log("info","Validating: "+msg);
+ global.logger.log("info","Validating: "+JSON.stringify(msg));
  
  let jsonmsg= null;
- console.log(msg);
  try {
    jsonmsg= JSON.parse(msg);
  }
  catch(ex) {
-   console.log(ex);
+  global.logger.log("error",ex);
    sendError(res, 0);
    return;
  }
  if(Object.keys(jsonmsg).length!= fields.length) {
-   console.log(" expecting: "+fields.length+" got: "+Object.keys(jsonmsg).length);
-   console.log(jsonmsg);
+  global.logger.log("error"," expecting: "+fields.length+" got: "+Object.keys(jsonmsg).length);
+  global.logger.log("error",jsonmsg);
    sendError(res, 1);
    return;
  }
@@ -154,7 +152,7 @@ router.post('/', function(req, res, next) {
  res.statusCode= 200;
  res.end();
  laststatus= res.statusCode;
- console.log("Validator passed.");
+ global.logger.log("info","Validation passed.");
 });
 
 module.exports = router;

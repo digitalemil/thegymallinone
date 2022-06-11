@@ -5,12 +5,14 @@ import json
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
+import logging
+logger = logging.getLogger('logger')
 
 # Create your views here.
 from django.http import HttpResponse
 
 def errorfunction(error1, error2):
-    print("Error: "+str(error1)+" "+str(error2))
+    logger.error(str(error1)+" "+str(error2))
 
 @require_http_methods(["GET"])
 def index(request):
@@ -20,7 +22,7 @@ def index(request):
 @csrf_exempt
 def work(request):
   body = request.body.decode("utf-8")
-  print("Got: " + body)
+  logger.info("Got: " + body)
   headers = {'Content-type': 'application/json'}
   rs1 = requests.post(os.environ["DUPPLICATOR_OUT1"], data=body, headers=headers)
   rs2 = requests.post(os.environ["DUPPLICATOR_OUT2"], data=body, headers=headers)
@@ -28,5 +30,8 @@ def work(request):
   s= 200
   if rs1.status_code!= 200 or rs2.status_code!= 200:
     s= 503
-
+  if s == 200:
+    logger.info("Message duplicated.")
+  else:
+    logger.error("Message NOT duplicated: "+rs1.status_code+" "+rs2.status_code)
   return HttpResponse("OK", status= s)

@@ -30,10 +30,9 @@ async function addEvaluatedMessage(msg) {
     }
   }
   catch(e)  {
-    console.log(e);
-    console.log(msg);
+    global.logger.log("error", e.toString());
+    global.logger.log("error", msg);
   }
-  //console.log(msgs);
 }
 
 async function validate(msg) {
@@ -42,12 +41,11 @@ async function validate(msg) {
     result= await axios.post(process.env.MESSAGE_VALIDATOR, msg);
   }
   catch(err) {
-    console.log("Message validation failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_VALIDATOR);   
+    global.logger.log("error", "Message validation failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_VALIDATOR);   
     return false;
   }
   if(result.status!= 200)
     return false;
-  //console.log("Message validated. "+result.status);
   return true;
 };
 
@@ -57,7 +55,7 @@ async function transform(msg) {
     result= await axios.post(process.env.MESSAGE_TRANSFORMER, msg);
   }
   catch(err) {
-    console.log("Message transformation failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_TRANSFOMER);   
+    global.logger.log("error", "Message transformation failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_TRANSFOMER);   
     return undefined;
   }
   if(result.status!= 200)
@@ -68,7 +66,6 @@ async function transform(msg) {
 async function evaluateMessageWithModel(msg, model) {
   if(model== undefined || model=="")
     return msg;
-   // console.log("Evaluating msg with model");
     let jsonmsg= JSON.parse(msg);
     jsonmsg.model= model;
     let result= "";
@@ -76,8 +73,8 @@ async function evaluateMessageWithModel(msg, model) {
       result= await axios.post(process.env.PMML_EVALUATOR, jsonmsg);
     }
     catch(err) {
-      console.log(err);
-      console.log("PMML evaluation failed: "+err.response.status+ " "+msg+" "+process.env.PMML_EVALUATOR);   
+      global.logger.log("error", err.toString());
+      global.logger.log("error", "PMML evaluation failed: "+err.response.status+ " "+msg+" "+process.env.PMML_EVALUATOR);   
       return undefined;
     }
     if(result.status!= 200)
@@ -114,11 +111,11 @@ async function handleMessage(msg) {
   let m= await transform(msg);
   
   if(!await validate(m)) {
-    console.log("Can't validate msg: "+ msg);
+    global.logger.log("error", "Can't validate msg: "+ msg);
     laststatus= 400;
   }
   else {
-   // console.log("Received msg: "+msg);
+    global.logger.log("info", "Received msg: "+msg);
     laststatus= 200;
   }
 
@@ -138,7 +135,7 @@ router.post('/', async function(req, res, next) {
       await addEvaluatedMessage(m);
     }
     else {
-        console.log("Message damaged: "+ lastmsg);
+      global.logger.log("error", "Message damaged: "+ lastmsg);
     } 
   }
   catch(ex) {

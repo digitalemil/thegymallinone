@@ -13,12 +13,17 @@ export LOGGER_PORT=3036
 export LOGGER_MINTIME=1000
 export LOGGER_TIMEADDON=1000
 export LOGGER_LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
+export LOGFOLDER=/opt/app/logs
 
-
+mkdir -p /opt/app/logs/microservice-messagelistener
+mkdir -p /opt/app/logs/microservice-messagetransformer
+mkdir -p /opt/app/logs/microservice-messagevalidator
 mkdir -p /opt/app/logs/microservice-messagelogger
 mkdir -p /opt/app/logs/microservice-pmmlevaluator
-
-/opt/app/microservice-pmmlevaluator/tomcat/bin/catalina.sh start
+mkdir -p /opt/app/logs/microservice-frontend/
+mkdir -p /opt/app/logs/microservice-messageduplicator
+#export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:55680
+java -javaagent:/opt/app/microservice-pmmlevaluator/opentelemetry-javaagent.jar -jar /opt/app/microservice-pmmlevaluator/microservice-pmmlevaluator-0.0.1-SNAPSHOT.jar &
 sleep 12
 node /opt/app/microservice-messagetransformer/bin/www &
 sleep 2
@@ -28,11 +33,11 @@ node /opt/app/microservice-messagelistener/bin/www &
 sleep 2
 node /opt/app/microservice-frontend/bin/www &
 sleep 2
-cd /opt/app/microservice-messageduplicator; gunicorn --log-file=- --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
+cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --log-file=/opt/app/logs/microservice-messageduplicator/gunicorn.log --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
 sleep 2
 cd /opt/app/microservice-messagelogger; ./logger &
 
-#node /opt/app/microservice-loadgenerator/bin/www &
+node /opt/app/microservice-loadgenerator/bin/www &
 sleep 2
 
 

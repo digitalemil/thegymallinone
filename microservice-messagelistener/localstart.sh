@@ -4,6 +4,7 @@ export MESSAGE_TRANSFORMER=http://localhost:8082
 export MESSAGE_VALIDATOR=http://localhost:8083
 export PMML_EVALUATOR=http://localhost:8084
 export LISTENERPORT=18080
+export LOGFOLDER=${HOME}/tmp
 nodemon npm start
 
 

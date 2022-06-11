@@ -10,12 +10,14 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.3",
     "debug": "^4.1.1",
-    "ejs": "~2.5.2",
+    "ejs": "^3.1.8",
     "express": "^4.17.1",
+    "express-winston": "^4.2.0",
     "jaeger-client": "^3.17.1",
     "morgan": "^1.9.1",
-    "request": "^2.88.0",
     "prom-client": "^13.0.1",
-    "serve-favicon": "^2.5.0"
+    "request": "^2.88.0",
+    "serve-favicon": "^2.5.0",
+    "winston": "^3.7.2"
   }
 }

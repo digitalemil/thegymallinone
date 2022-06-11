@@ -26,7 +26,7 @@ function fiberparseXML(xml, ret) {
 function parseXML(xml) {
   let ret = "";
   Fiber(function () {
-    console.log("! " + xml)
+    global.logger.log("info","Parse XML: " + xml)
     fiberparseXML(xml, ret);
   }).run();
   return xmlasjson;
@@ -38,7 +38,7 @@ appjson = appjson.replace(/\'/g, '\"');
 let appdef = JSON.parse(appjson);
 
 let transformer = decodeURIComponent(appdef.transformer);
-console.log("Transformer: " + transformer);
+global.logger.log("info","Transformer: " + transformer);
 
 let fields = new Array();
 let types = new Array()
