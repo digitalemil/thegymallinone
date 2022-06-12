@@ -184,6 +184,7 @@ app.use(basicAuth({
   users: obj
 }))*/
 app.use('/data', dataRouter);
+app.use('/data/load', dataRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
