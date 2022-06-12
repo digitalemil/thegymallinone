@@ -4,13 +4,13 @@ var app = express();
 var url = require('url');
 const axios = require("axios");
 
-let model ="";
+let model = "";
 let nlisteners = 1;
 
-let msgs1000= new Array();
-let n1000= 0;
+let msgs1000 = new Array();
+let n1000 = 0;
 
-let allinone= true;
+let allinone = true;
 
 let json = new String(process.env.APPDEF);
 json = json.replace(/\'/g, '\"');
@@ -28,8 +28,8 @@ var nmessages = 0;
 var messageoffset = -1;
 let listener = process.env.LISTENER;
 let domain = process.env.DOMAIN;
-if(allinone)
-  domain= listener;
+if (allinone)
+  domain = listener;
 
 
 async function getDataFromListeners() {
@@ -37,38 +37,40 @@ async function getDataFromListeners() {
     //const span = global.tracer.startSpan("getDataFromListeners");
     for (let i = 0; i < nlisteners; i++) {
       let h;
-      let p= "/model";
+      let p = "/model";
       if (listener == "")
         h = "http://" + domain;
       else
         h = "http://" + listener + "-" + i + "." + domain;
 
-      if(allinone) {
-        h= listener;  
+      if (allinone) {
+        h = listener;
       }
 
       let result = "";
       try {
-        if(process.env.NOEXT!= "true")
-          result = await axios.post(h+p, model);
+        if (process.env.NOEXT != "true")
+          result = await axios.post(h + p, model);
       }
       catch (err) {
-        global.logger.log("error","Can't post data to Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        global.logger.log("error", "Can't post data to Listener: " + (h + p) + " " + process.env.LISTENER + " " + process.env.DOMAIN);
         global.logger.log("error", err);
         continue;
       }
-      p= "/data";
+      p = "/data";
       try {
-        if(process.env.NOEXT!= "true")
-          result = await axios.get(h+p);
+        if (process.env.NOEXT != "true")
+          result = await axios.get(h + p);
       }
       catch (err) {
-        global.logger.log("error","Can't get data from Listener: " + (h+p) + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        global.logger.log("error", "Can't get data from Listener: " + (h + p) + " from: " + h + " " + process.env.LISTENER + " " + process.env.DOMAIN);
         continue;
       }
-      if (result.status != 200)
+      if (result.status != 200) {
+        global.logger.log("error", "Error processing listener: " + i)
         continue;
-        global.logger.log("error", "Error processing listener: "+i)
+      }
+
       hrdataMessageHandler(result.data);
     }
     emitData();
@@ -83,26 +85,26 @@ async function getDataFromListeners() {
 getDataFromListeners();
 
 function addMessage(user, msg) {
-    if(user=="me")
-    global.logger.log("info","Adding me: "+JSON.stringify(msg));
-      messages[user]= msg;
-      msgs1000[n1000]= msg;
-      n1000++;
-      if(n1000== 1000)
-        n1000= 0;
+  if (user == "me")
+    global.logger.log("info", "Adding me: " + JSON.stringify(msg));
+  messages[user] = msg;
+  msgs1000[n1000] = msg;
+  n1000++;
+  if (n1000 == 1000)
+    n1000 = 0;
 };
 
 function hrdataMessageHandler(msgs) {
-  global.logger.log("info", "Handling: "+msgs);
+  global.logger.log("info", "Handling: " + msgs);
   try {
-    Object.keys(msgs).forEach(user=> {
-      if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp)) {
-        addMessage(user, msgs[user]);      
-        global.logger.log("info", "Added msg: "+JSON.stringify(msgs[user]));   
+    Object.keys(msgs).forEach(user => {
+      if (messages[user] == undefined || Date.parse(messages[user].event_timestamp) < Date.parse(msgs[user].event_timestamp)) {
+        addMessage(user, msgs[user]);
+        global.logger.log("info", "Added msg: " + JSON.stringify(msgs[user]));
       }
       else {
-        global.logger.log("info", "Old msg: "+Date.parse(messages[user].event_timestamp)+" new msg: "+Date.parse(msgs[user].event_timestamp)+" delta: "+(parseInt(messages[user].event_timestamp)- parseInt(msgs[user].event_timestamp)));
-        global.logger.log("info", "Message dropped because of age: "+JSON.stringify(msgs[user]));
+        global.logger.log("info", "Old msg: " + Date.parse(messages[user].event_timestamp) + " new msg: " + Date.parse(msgs[user].event_timestamp) + " delta: " + (parseInt(messages[user].event_timestamp) - parseInt(msgs[user].event_timestamp)));
+        global.logger.log("info", "Message dropped because of age: " + JSON.stringify(msgs[user]));
       }
     })
   }
@@ -119,42 +121,42 @@ router.get(['/listener.html'], function (req, res, next) {
   res.render('listener', { nl: nlisteners });
 });
 
-router.get('/jupyter.html', function(req, res, next) {
-  let obj= require("/"+process.env.APPDIR+"/TheGymR.json");
-  let txt= JSON.stringify(obj.notebook)
+router.get('/jupyter.html', function (req, res, next) {
+  let obj = require("/" + process.env.APPDIR + "/TheGymR.json");
+  let txt = JSON.stringify(obj.notebook)
   res.setHeader('Content-disposition', 'attachment; filename=TheGymR.ipynb');
   res.write(txt);
   res.end();
 });
 
 router.get('/1000messages.html', function (req, res, next) {
-    let data= "";
-    data= data.concat("rowid,");
-    for(let j= 0; j< fields.length; j++) {
-        data= data.concat(fields[j].toString());
-        if(j< fields.length-1)
-            data= data.concat(",");
+  let data = "";
+  data = data.concat("rowid,");
+  for (let j = 0; j < fields.length; j++) {
+    data = data.concat(fields[j].toString());
+    if (j < fields.length - 1)
+      data = data.concat(",");
+  }
+  data = data.concat("\n");
+  for (let i = 0; i < msgs1000.length; i++) {
+    data = data.concat(i + ",");
+    for (let j = 0; j < fields.length; j++) {
+      if (msgs1000[i][fields[j]].toString().includes(","))
+        data = data.concat('"' + msgs1000[i][fields[j]].toString() + '"');
+      else
+        data = data.concat(msgs1000[i][fields[j]].toString());
+      if (j < fields.length - 1)
+        data = data.concat(",");
     }
-    data= data.concat("\n");
-    for(let i= 0; i< msgs1000.length; i++) {
-        data= data.concat(i+",");
-     for(let j= 0; j< fields.length; j++) {
-         if(msgs1000[i][fields[j]].toString().includes(","))
-            data= data.concat('"'+msgs1000[i][fields[j]].toString()+'"');
-         else
-            data= data.concat(msgs1000[i][fields[j]].toString());
-        if(j< fields.length-1)
-            data= data.concat(",");
-     }
-     data= data.concat("\n");
-    }
-    
-   res.render('csv', { data:data });
+    data = data.concat("\n");
+  }
+
+  res.render('csv', { data: data });
 });
 
 router.get(['/setlisteners'], function (req, res, next) {
-  nlisteners= parseInt(req.query.nl);
-  global.logger.log("info", "Listeners set to: "+nlisteners);
+  nlisteners = parseInt(req.query.nl);
+  global.logger.log("info", "Listeners set to: " + nlisteners);
   res.render('uihome', { table: appdef.table, keyspace: appdef.keyspace });
 });
 
@@ -178,7 +180,7 @@ router.get(['/mapdata'], function (req, res, next) {
   let data = new Object();
   data.total = nmessages;
   data.locations = new Array();
- 
+
   let j = 0;
   let now = new Date().getTime();
   let maxoffset = 0;
@@ -227,22 +229,27 @@ router.get(['/data.html'], function (req, res, next) {
 router.post(['/data'], async function (req, res, next) {
   let msg = req.body;
   let h;
-  let p= "/";
+  let p = "/";
   global.logger.log("info", "Processing incoming data.");
-  if (listener == "")
-    h = "http://" + domain;
-  else
-    h = "http://" + listener + "-" + 0 + "." + domain;
-    let result = "";
+  if (!listener.startsWith("http")) {
+    if (listener == "")
+      h = "http://" + domain;
+    else
+      h = "http://" + listener + "-" + 0 + "." + domain;
+  }
+  else {
+    h= listener;
+    p= "";
+  }
+  let result = "";
   try {
-    if(process.env.NOEXT!= "true")
-      result = await axios.post(h+p, msg);
-    let pm= JSON.parse(msg);
+    result = await axios.post(h + p, msg);
+    let pm = JSON.parse(msg);
     addMessage(pm.user, pm)
-    global.logger.log("info", "Data: "+pm);
+    global.logger.log("info", "Data: " + pm);
   }
   catch (err) {
-    global.logger.log("info", "Can't post data to Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN+" "+msg);
+    global.logger.log("info", "Can't post data to Listener: " + (h + p) + " " + process.env.LISTENER + " " + process.env.DOMAIN + " " + msg);
   }
   res.end();
 });
@@ -257,7 +264,7 @@ router.post(['/model'], function (req, res, next) {
 
 
 router.get(['/model'], function (req, res, next) {
-  global.logger.log("info", "Get model: "+model)
+  global.logger.log("info", "Get model: " + model)
   res.write(model);
   res.end();
 });
@@ -271,8 +278,8 @@ router.get(['/model.html', 'thegym/model/html'], function (req, res, next) {
 function emitData() {
   let d = sessionData();
 
-  global.logger.log('info', "Emitting: "+JSON.stringify(d))
-  if(! (typeof io === 'undefined'))
+  global.logger.log('info', "Emitting: " + JSON.stringify(d))
+  if (!(typeof io === 'undefined'))
     io.emit("session", d);
 };
 
@@ -297,7 +304,7 @@ function sessionData() {
       dt = new Date(dt);
       let ms = dt.getTime();
       if (now > ms + 1000 * 60 || em) {
-      //  delete messages[key];
+        //  delete messages[key];
         continue;
       }
     }
