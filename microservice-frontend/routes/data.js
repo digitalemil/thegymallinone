@@ -16,10 +16,20 @@ let  prom_lastlat= new client.Gauge({ name: 'latest_latitude', help: 'Latest Lat
 
 
 router.all('/', async function (req, res, next) {
+  global.logger.log("info", "Recieving message...");
+ 
     if(passwd.password!= req.query.password) {
         res.write("User "+req.user+" unauthorized.");
         res.end();
+        global.logger.log("error", "Authentication failed for: "+req.query.user);
+ 
         return;
+    }
+    global.logger.log("info", "User "+req.query.user+" authenticated.");
+ 
+    if(req.query.user.length>12) {
+      req.query.user= "Me";
+      global.logger.log("info", "User name "+req.query.user+" changed to 'Me'.");
     }
     global.hr= req.query.hr;
     global.lon= req.query.lon;
@@ -44,7 +54,8 @@ router.all('/', async function (req, res, next) {
     eo.lon= global.lon;
     eo.lat= global.lat;
     eo.user= req.query.user;
-
+ 
+    global.logger.log("info", "Websocket emit: "+JSON.stringify(eo));
     io.emit("garmin", eo);
 
     obj.heartrate = parseInt(obj.hr);
@@ -52,6 +63,7 @@ router.all('/', async function (req, res, next) {
     obj.location = obj.lon + "," + obj.lat;
     if(obj.location.includes("---")) {
       obj.location="-122.957359,50.116322";
+      global.logger.log("info", "No location info, setting to: '-122.957359,50.116322'");
     }
   
     let d = new Date();
@@ -92,17 +104,6 @@ router.all('/', async function (req, res, next) {
     delete obj.lon;
     delete obj.lat;
     delete obj.hr;
-  
-    // Post to duplicator
-    //fields':[{'name':'heartrate','pivot':true,'type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','type':'Long','pivot':'false'},{'name':'location','type':'Location','pivot':'false'},{'name':'event_timestamp','type':'Date/time','pivot':'false'}]
-   /*
-    try {
-      result = await axios.post(process.env.MESSAGE_DUPLICATOR, JSON.stringify(obj));
-    }
-    catch (err) {
-      global.logger.log("Error", "Can't post data to Dupplicator " + process.env.MESSAGE_DUPLICATOR + " " + JSON.stringify(obj)+ " "+err);
-    }
-  */
     
     try {
       result = await axios.post(process.env.LISTENER, JSON.stringify(obj));
@@ -115,7 +116,7 @@ router.all('/', async function (req, res, next) {
  
     res.write("OK.\n");
     res.end();
-  //res.render('home', { title: 'The Gym', hr:hr, lon:lon, lat:lat });
+    global.logger.log("info", "Message successfully handled.");
 });
  
 

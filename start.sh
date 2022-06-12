@@ -40,7 +40,7 @@ cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.p
 sleep 2
 cd /opt/app/microservice-messagelogger; ./logger &
 
-node /opt/app/microservice-loadgenerator/bin/www &
+#node /opt/app/microservice-loadgenerator/bin/www &
 sleep 2
 
 
