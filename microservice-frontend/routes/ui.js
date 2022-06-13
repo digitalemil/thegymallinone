@@ -173,7 +173,8 @@ router.get(['/home.html'], function (req, res, next) {
 });
 
 router.get(['/map.html'], function (req, res, next) {
-  res.render('map', { table: appdef.table, keyspace: appdef.keyspace, name: "" });
+
+  res.render('map', { GoogleMapsKey: process.env.GOOGLEMAPSKEY, table: appdef.table, keyspace: appdef.keyspace, name: "" });
 });
 
 router.get(['/mapdata'], function (req, res, next) {
