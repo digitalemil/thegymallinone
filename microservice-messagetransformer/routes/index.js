@@ -60,10 +60,13 @@ router.post('/', function (req, res, next) {
       throw "result== null";
     res.write(result);
     res.statusCode = 200;
+    global.logger.log("info", "Transformer successfully: "+result);
+ 
   }
   catch (ex) {
     res.statusCode = 400;
     result = ex.toString();
+    global.logger.log("error", "Exception: "+ex.toString());
   }
   laststatus = res.statusCode;
   res.end();

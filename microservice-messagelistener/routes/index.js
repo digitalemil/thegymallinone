@@ -164,6 +164,7 @@ router.post('/', async function(req, res, next) {
     } 
   }
   catch(ex) {
+    global.logger.log("error", "Exception: "+ex.toString());
     laststatus= 500;
   }
 
