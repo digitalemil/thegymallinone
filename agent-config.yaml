@@ -20,9 +20,21 @@ logs:
         - job_name: thegym/logs
           static_configs:
             - labels:
+                __path__: /opt/app/logs/microservice-sqlui/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-sqlui
+              targets:
+                - localhost
+            - labels:
                 __path__: /opt/app/logs/microservice-pmmlevaluator/*.log
                 instance: $(K_SERVICE)
                 job: thegym/microservice-pmmlevaluator
+              targets:
+                - localhost
+            - labels:
+                __path__: /opt/app/logs/microservice-messagepersister/*.log
+                instance: $(K_SERVICE)
+                job: thegym/microservice-messagepersister
               targets:
                 - localhost
             - labels:
@@ -61,6 +73,13 @@ logs:
                 job: thegym/microservice-messageduplicator
               targets:
                 - localhost
+            - labels:
+                __path__: /cockroach-data/logs/*.log
+                instance: $(K_SERVICE)
+                job: thegym/cockroachdb
+              targets:
+                - localhost
+
 metrics:
   configs:
     - name: integrations
@@ -90,23 +109,40 @@ metrics:
             - targets: ['127.0.0.1:3034']
             - labels:
                 microservice: "messagelistener"        
-        - job_name: golang-integration
+        - job_name: messagepersister
+          static_configs:
+            - targets: ['127.0.0.1:3038']
+            - labels:
+                microservice: "messagepersister"        
+        - job_name: messageduplicator
           static_configs:
             - targets: ['127.0.0.1:3036']
             - labels:
                 microservice: "messagelogger"
-        - job_name: integrations/spring-boot
+        - job_name: pmmlevaluator
           metrics_path: /actuator/prometheus
           static_configs:
             - targets: ['127.0.0.1:8080']
             - labels:
                 microservice: "pmmlevaluator"
+        - job_name: sqlui
+          metrics_path: /sql/actuator/prometheus
+          static_configs:
+            - targets: ['127.0.0.1:8081']
+            - labels:
+                microservice: "sqlui"
         - job_name: integrations/python-django
           metrics_path: /metrics
           static_configs:
             - targets: ['127.0.0.1:3037']
             - labels:
                 microservice: "messageduplicator"
+        - job_name: integrations/cockroachdb
+          metrics_path: /_status/vars
+          static_configs:
+            - targets: ['127.0.0.1:8088']
+            - labels:
+                dbservice: "cockroachdb"
   global:
     scrape_interval: 60s
   wal_directory: /tmp/grafana-agent-wal

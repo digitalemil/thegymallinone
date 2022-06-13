@@ -1,0 +1,197 @@
+.btn, .form-control {
+  /* reset user agent stylesheet */
+  font-family: "Italiana", regular; font-size: 24px;
+  background-color: transparent;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: white;
+  appearance: none;
+  line-height: 1.2;
+  padding: 0.5em var(--padding-x);
+  border-width: 2px;
+  border-style: solid;
+ }
+
+ .btn:hover {
+  background-color: darkgray; 
+  color: white;
+}
+
+/* button */
+.btn {
+  display: inline-flex;
+  justify-content: center; /* center the content horizontally */
+  align-items: center; /* center the content vertically */
+  --padding-x: 1.2em;
+  border-color: white; /* hide button border */
+}
+
+
+body {
+padding: 50px;
+font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+background-image: url("../images/thegym.jpg");
+background-color: black;
+background-repeat: repeat-y;
+background-size: cover;
+color:white;
+background-repeat: repeat;
+background-position: center;
+}
+
+a {
+color: #f0f0f0;
+}
+
+img.flower {
+content: url("");
+width: 80px;
+position: fixed;
+opacity: 0.064;
+bottom: 2px;
+left: 2px;
+}
+
+img.icon {
+content: url("");
+width: 192px;
+position: fixed;
+top: 2px;
+right: 2px;
+}
+
+@font-face {
+  font-family: 'Italiana';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Italiana'), local('Italiana-Regular'),
+       url('../fonts/italiana-v6-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/italiana-v6-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* great-vibes-regular - latin */
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Great Vibes'), local('GreatVibes-Regular'),
+       url('../fonts/great-vibes-v5-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/great-vibes-v5-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}        
+/* pinyon-script-regular - latin */
+@font-face {
+  font-family: 'Pinyon Script';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Pinyon Script'), local('PinyonScript'),
+       url('../fonts/pinyon-script-v7-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/pinyon-script-v7-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}    
+
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 240px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: #000000; 
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 0px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #A0A0A0;
+  display: block;
+  font-family: "Italiana", regular; font-size: 24px; 
+}
+
+.table {
+  font-family: "Italiana", regular; font-size: 24px;
+  color:white;
+}
+.sidenav a:hover {
+  color: #727272;
+}
+
+.sidenav li {
+  list-style: none;
+}
+
+.main {
+  margin-right: 240px; /* Same as the width of the sidebar */
+  padding: 0px 0px;
+}
+
+a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: underline;
+  font-size: 25px;
+  color: #A0A0A0;
+  display: block;
+  font-family: "Italiana", regular; font-size: 24px; 
+}
+
+a:hover {
+  color: #727272;
+}
+
+
+input { 
+    border: none;
+    background: transparent;
+    font-family: "Italiana", regular; font-size: 24px; color: #202020; text-align: center
+}
+input:focus {
+    outline: none !important;
+    border:1px solid 504848;
+    box-shadow: 0 0 10px #252424;
+}
+
+.select-wrapper {
+  position: relative;
+  width: 200px;
+}
+
+.select-wrapper::before {
+  color: #fff;
+  font-size: 20px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8nwYAAmoBZ0eMiB8AAAAASUVORK5CYII=) repeat;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 2px 2px 5px 1px rgba(0,0,0,.3);
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  height: 40px;
+  outline: none;
+  padding-left: 10px;
+  width: 100%;
+}
+
+select option {
+  color: #666;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select:focus::-ms-value {
+  background-color: transparent;
+}

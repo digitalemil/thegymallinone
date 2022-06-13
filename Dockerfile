@@ -2,9 +2,16 @@ FROM digitalemil/thesimplegym:baseimg-thegym-allinone-v0.0.1
 
 RUN pip3 install django-prometheus
 
+COPY cockroach /usr/local/bin
+COPY thegym.sql /
+
 RUN mkdir -p /opt/app/microservice-pmmlevaluator
 COPY microservice-pmmlevaluator/target/microservice-pmmlevaluator-0.0.1-SNAPSHOT.jar /opt/app/microservice-pmmlevaluator/
 COPY microservice-pmmlevaluator/opentelemetry-javaagent.jar  /opt/app/microservice-pmmlevaluator/
+
+RUN mkdir -p /opt/app/microservice-sqlui
+COPY microservice-sqlui/target/microservice-sqlui-0.0.1-SNAPSHOT.jar /opt/app/microservice-sqlui/
+COPY microservice-sqlui/opentelemetry-javaagent.jar  /opt/app/microservice-sqlui/
 
 COPY microservice-loadgenerator /opt/app/microservice-loadgenerator
 RUN cd /opt/app/microservice-loadgenerator; npm install
@@ -17,6 +24,9 @@ RUN cd /opt/app/microservice-messagetransformer; npm install
 
 COPY microservice-messagevalidator /opt/app/microservice-messagevalidator
 RUN cd /opt/app/microservice-messagevalidator; npm install
+
+COPY microservice-messagepersister /opt/app/microservice-messagepersister
+RUN cd /opt/app/microservice-messagepersister; npm install
 
 COPY microservice-frontend/bin /opt/app/microservice-frontend/bin
 COPY microservice-frontend/public /opt/app/microservice-frontend/public

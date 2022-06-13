@@ -49,6 +49,20 @@ async function validate(msg) {
   return true;
 };
 
+async function persist(msg) {
+  let result= "";
+  try {
+    result= await axios.post(process.env.MESSAGE_PERSISTER, msg);
+  }
+  catch(err) {
+    global.logger.log("error", "Message persist failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_PERSISTER);   
+    return false;
+  }
+  if(result.status!= 200)
+    return false;
+  return true;
+};
+
 async function transform(msg) {
   let result= "";
   try {
@@ -120,8 +134,19 @@ async function handleMessage(msg) {
   }
 
   if(laststatus== 200) {
-    return await evaluateMessageWithModel(m, lastmodel);
+    m= await evaluateMessageWithModel(m, lastmodel);
   }
+
+  if(!await persist(msg)) {
+    global.logger.log("error", "Can't persist msg: "+ msg);
+    laststatus= 400;
+  }
+  else {
+    global.logger.log("info", "Message persisted: "+msg);
+    laststatus= 200;
+    return m;
+  }
+
   return undefined;
 };
 

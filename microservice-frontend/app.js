@@ -10,7 +10,7 @@ var logger = require('morgan');
 const session = require('express-session');
 const basicAuth = require('express-basic-auth');
 let darkmode= true;
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware, fixRequestBody  } = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
 var app = express();
 
@@ -26,6 +26,7 @@ app.get('/metrics', async (_req, res) => {
     res.status(500).end(err);
   }
 });
+
 
 const wlogger = winston.createLogger({
   level: 'info',
@@ -170,6 +171,11 @@ app.use('/app', authRequired);
 app.use('/app/*', authRequired);
 app.use('/ui', authRequired);
 app.use('/ui/*', authRequired);
+app.use('/sql', authRequired);
+app.use('/sql/*', authRequired);
+app.use('/sql', createProxyMiddleware({ onProxyReq: fixRequestBody, target: 'http://127.0.0.1:8081', changeOrigin: false }));
+/*app.use('/db', createProxyMiddleware({ pathRewrite: {
+  '^/db': '/'}, onProxyReq: fixRequestBody, target: 'http://127.0.0.1:8088', changeOrigin: false }));*/
 app.use('/ui', uiRouter);
 app.use('/', indexRouter);
 app.use('/hr', indexRouter);
