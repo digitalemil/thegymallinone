@@ -1,4 +1,6 @@
 integrations:
+  agent:
+    enabled: true
   prometheus_remote_write:
     - basic_auth:
         password: eyJrIjoiOTI2M2FjNzBiYzE5ZWYwZGIyZTQ5NzIzZGNiZWI4Yzk4YTBhMGYwMiIsIm4iOiJkaWdpdGFsZW1pbC1lYXN5c3RhcnQtcHJvbS1wdWJsaXNoZXIiLCJpZCI6NTk2NjUxfQ==
@@ -15,7 +17,7 @@ logs:
       positions:
         filename: /tmp/positions.yaml
       target_config:
-        sync_period: 60s
+        sync_period: 10s
       scrape_configs:
         - job_name: thegym/logs
           static_configs:
@@ -114,7 +116,7 @@ metrics:
             - targets: ['127.0.0.1:3038']
             - labels:
                 microservice: "messagepersister"        
-        - job_name: messageduplicator
+        - job_name: messagelogger
           static_configs:
             - targets: ['127.0.0.1:3036']
             - labels:
@@ -144,7 +146,7 @@ metrics:
             - labels:
                 dbservice: "cockroachdb"
   global:
-    scrape_interval: 60s
+    scrape_interval: 10s
   wal_directory: /tmp/grafana-agent-wal
 traces:
   configs:

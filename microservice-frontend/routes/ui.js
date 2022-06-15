@@ -3,7 +3,14 @@ var router = express.Router();
 var app = express();
 var url = require('url');
 const axios = require("axios");
+const client = require('prom-client');
 
+let prom_sessions = new client.Gauge({ name: 'sessions', help: 'Active Sessions' });
+let prom_hr = new client.Gauge({ name: 'heartrate', help: 'Heartarte', labelNames: ['user'] });
+let prom_lon = new client.Gauge({ name: 'longitude', help: 'Longitude', labelNames: ['user'] });
+let prom_lat = new client.Gauge({ name: 'latitude', help: 'Latitude', labelNames: ['user'] }); 
+
+let metrics = new Array();
 let model = "";
 let nlisteners = 1;
 
@@ -96,14 +103,21 @@ function addMessage(user, msg) {
 
 function hrdataMessageHandler(msgs) {
   global.logger.log("info", "Handling: " + msgs);
+  let ms;
   try {
     Object.keys(msgs).forEach(user => {
-      if (messages[user] == undefined || Date.parse(messages[user].event_timestamp) < Date.parse(msgs[user].event_timestamp)) {
+      
+      if (messages[user] == undefined || Date.parse(messages[user].event_timestamp) <= Date.parse(msgs[user].event_timestamp)) {
         addMessage(user, msgs[user]);
-        global.logger.log("info", "Added msg: " + JSON.stringify(msgs[user]));
+
+        prom_hr.set({ user: user.toString()}, parseFloat(msgs[user].heartrate));
+
+        let l = msgs[user].location;
+        let ls = l.split(",");
+        prom_lon.set({ user: user.toString()}, parseFloat(ls[0]));
+        prom_lat.set({ user: user.toString()}, parseFloat(ls[1]));
       }
       else {
-        global.logger.log("info", "Old msg: " + Date.parse(messages[user].event_timestamp) + " new msg: " + Date.parse(msgs[user].event_timestamp) + " delta: " + (parseInt(messages[user].event_timestamp) - parseInt(msgs[user].event_timestamp)));
         global.logger.log("info", "Message dropped because of age: " + JSON.stringify(msgs[user]));
       }
     })
@@ -190,6 +204,10 @@ router.get(['/mapdata'], function (req, res, next) {
     let dt = location.event_timestamp;
     let ms = new Date(dt).getTime();
     if (now > ms + 1000 * 60) {
+        let m= messages[key];
+        prom_hr.set({ user: m.user.toString()}, parseFloat(0));
+        prom_lon.set({ user: m.user.toString()}, parseFloat(0));
+        prom_lat.set({ user: m.user.toString()}, parseFloat(0));
       delete messages.key;
       continue;
     }
@@ -239,8 +257,8 @@ router.post(['/data'], async function (req, res, next) {
       h = "http://" + listener + "-" + 0 + "." + domain;
   }
   else {
-    h= listener;
-    p= "";
+    h = listener;
+    p = "";
   }
   let result = "";
   try {
@@ -294,7 +312,6 @@ function sessionData() {
   let i = 0;
   let first = true;
   let now = new Date().getTime();
-
   for (var key in messages) {
     try {
       let dt = messages[key].event_timestamp;
@@ -321,9 +338,12 @@ function sessionData() {
       ret += ", ";
     else
       first = false;
+    i++;
     ret += "{\"calories\":\"\",\"color\":\"" + color + "\",\"hr\":\"" + hr + "\",\"name\":\"" + user + "\",\"recovery\":\"\",\"deviceid\":\"" + deviceid + "\"}";
   }
   ret = ret + "]}";
+  prom_sessions.set(parseFloat(i.toString()));
+
   //span.finish();
   return ret;
 };

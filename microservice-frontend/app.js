@@ -179,8 +179,18 @@ app.use('/sql', createProxyMiddleware({ onProxyReq: fixRequestBody, target: 'htt
 app.use('/ui', uiRouter);
 app.use('/', indexRouter);
 app.use('/hr', indexRouter);
+const client = require('prom-client');
 
-
+/*
+let prom_hr = new client.Gauge({ name: 'heartrate1', help: 'Heartarte', labelNames: ['user'] });
+let prom_lon = new client.Gauge({ name: 'longitude1', help: 'Longitude', labelNames: ['user'] });
+let prom_lat = new client.Gauge({ name: 'latitude1', help: 'Latitude', labelNames: ['user'] });
+//prom_hr.labels('user', "me").set(parseFloat("100"));
+prom_hr.set({ user: 'GET'}, 100);
+console.log("----");
+//prom_lon.labels('user', "me").set(parseFloat("100"));
+//prom_lat.labels('user', "me").set(parseFloat("100"));
+*/
 
 
 let obj= new Object();

@@ -1,1 +1,1 @@
-k6 run --vus 10  --duration 10s loadgenerator.js
+k6 run --vus 10  --duration 300s loadgenerator.js

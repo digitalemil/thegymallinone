@@ -35,11 +35,13 @@ mkdir -p /opt/app/logs/microservice-messageduplicator
 export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
 export OTEL_SERVICE_NAME=thegym-pmmlevaluator
 export OTEL_TRACES_EXPORTER=otlp
-java -javaagent:/opt/app/microservice-pmmlevaluator/opentelemetry-javaagent.jar -jar /opt/app/microservice-pmmlevaluator/microservice-pmmlevaluator-0.0.1-SNAPSHOT.jar &
+export OTEL_EXPORTER_OTLP_INSECURE=true
+java -Dotel.instrumentation.jdbc-datasource.enabled=true -Dlogging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG '-Dlogging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg traceID=%X{traceId} %n' -javaagent:/opt/app/microservice-pmmlevaluator/opentelemetry-javaagent.jar -jar /opt/app/microservice-pmmlevaluator/microservice-pmmlevaluator-0.0.1-SNAPSHOT.jar &
 export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
 export OTEL_SERVICE_NAME=thegym-sqlui
 export OTEL_TRACES_EXPORTER=otlp
-java -javaagent:/opt/app/microservice-sqlui/opentelemetry-javaagent.jar -jar /opt/app/microservice-sqlui/microservice-sqlui-0.0.1-SNAPSHOT.jar &
+export OTEL_EXPORTER_OTLP_INSECURE=true
+java -Dotel.instrumentation.jdbc-datasource.enabled=true -Dlogging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG '-Dlogging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg traceID=%X{traceId} %n' -javaagent:/opt/app/microservice-sqlui/opentelemetry-javaagent.jar -jar /opt/app/microservice-sqlui/microservice-sqlui-0.0.1-SNAPSHOT.jar &
 sleep 12
 node /opt/app/microservice-messagetransformer/bin/www &
 sleep 2

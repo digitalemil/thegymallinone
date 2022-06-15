@@ -6,7 +6,7 @@ RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/u
 RUN apt-get update
 RUN apt update
 RUN apt-get install -y openjdk-11-jdk
-RUN apt install -y python3 nodejs npm maven curl golang-go procps python3-pip libffi-dev git
+RUN apt install -y 1python3 nodejs npm maven curl golang-go procps python3-pip libffi-dev git
 RUN pip3 install gunicorn django grequests
 #RUN pg_createcluster --locale de_DE.UTF-8 --start 11 main
 

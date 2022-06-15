@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zsais/go-gin-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -42,6 +43,9 @@ func main() {
 	r.GET("/home", home)
 	r.GET("/", home)
 
+	p := ginprometheus.NewPrometheus("gin")
+	p.Use(r)
+
 	r.POST("/", func(c *gin.Context) {
 		jsonData, err := c.GetRawData()
 
@@ -50,7 +54,7 @@ func main() {
 		}
 		logit(string(jsonData))
 	})
-	r.GET("/metrics", prometheusHandler())
+//	r.GET("/metrics", prometheusHandler())
 	host := os.Getenv("LOGGER_HOST")
 	port := os.Getenv("LOGGER_PORT")
 
