@@ -36,6 +36,8 @@ COPY microservice-frontend/app.js /opt/app/microservice-frontend/
 COPY microservice-frontend/passwd.json /opt/app/microservice-frontend/
 COPY microservice-frontend/config.json /opt/app/microservice-frontend/
 COPY microservice-frontend/package.json /opt/app/microservice-frontend/
+COPY microservice-frontend/tracing.js /opt/app/microservice-frontend/
+
 RUN cd /opt/app/microservice-frontend; npm install
 
 COPY microservice-messagelogger /opt/app/microservice-messagelogger

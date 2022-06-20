@@ -43,17 +43,22 @@ export OTEL_TRACES_EXPORTER=otlp
 export OTEL_EXPORTER_OTLP_INSECURE=true
 java -Dotel.instrumentation.jdbc-datasource.enabled=true -Dlogging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG '-Dlogging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg traceID=%X{traceId} %n' -javaagent:/opt/app/microservice-sqlui/opentelemetry-javaagent.jar -jar /opt/app/microservice-sqlui/microservice-sqlui-0.0.1-SNAPSHOT.jar &
 sleep 12
-node /opt/app/microservice-messagetransformer/bin/www &
+export OTEL_SERVICE_NAME=thegym-messagevalidator
+node --require '/opt/app/microservice-messagevalidator/tracing.js' /opt/app/microservice-messagevalidator/bin/www &
 sleep 2
-node /opt/app/microservice-messagevalidator/bin/www &
+export OTEL_SERVICE_NAME=thegym-messagetransformer
+node --require '/opt/app/microservice-messagetransformer/tracing.js' /opt/app/microservice-messagetransformer/bin/www &
 sleep 2
-node /opt/app/microservice-messagelistener/bin/www &
+export OTEL_SERVICE_NAME=thegym-messagelistener
+node --require '/opt/app/microservice-messagelistener/tracing.js' /opt/app/microservice-messagelistener/bin/www &
 sleep 2
 export DBHOST=127.0.0.1
 export DBPORT=26257
-node /opt/app/microservice-messagepersister/bin/www &
+export OTEL_SERVICE_NAME=thegym-messagepersister
+node --require '/opt/app/microservice-messagepersister/tracing.js' /opt/app/microservice-messagepersister/bin/www &
 sleep 2
-node /opt/app/microservice-frontend/bin/www &
+export OTEL_SERVICE_NAME=thegym-frontend
+node --require '/opt/app/microservice-frontend/tracing.js' /opt/app/microservice-frontend/bin/www &
 sleep 2
 #cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
 cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.py runserver 0.0.0.0:3037 &
