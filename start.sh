@@ -61,7 +61,10 @@ export OTEL_SERVICE_NAME=thegym-frontend
 node --require '/opt/app/microservice-frontend/tracing.js' /opt/app/microservice-frontend/bin/www &
 sleep 2
 #cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
-cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.py runserver 0.0.0.0:3037 &
+export OTEL_SERVICE_NAME=thegym-messageduplicator
+#cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.py runserver 0.0.0.0:3037 &
+cd /opt/app/microservice-messageduplicator; export DEBUG=true; python3 manage.py runserver 0.0.0.0:3037 --noreload &
+
 sleep 2
 export OTEL_SERVICE_NAME=thegym-messagelogger
 cd /opt/app/microservice-messagelogger; ./logger &

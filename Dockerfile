@@ -1,6 +1,6 @@
 FROM digitalemil/thesimplegym:baseimg-thegym-allinone-v0.0.1
 
-RUN pip3 install django-prometheus
+RUN pip3 install django-prometheus opentelemetry-instrumentation-django==0.30b1 opentelemetry-exporter-otlp opentelemetry-exporter-otlp-proto-grpc
 
 COPY cockroach /usr/local/bin
 COPY thegym.sql /
