@@ -32,18 +32,25 @@ router.all('/load', async function (req, res, next) {
   obj.id = req.query.id;
   obj.deviceid = req.query.deviceid;
 
+  let retcode= 200;
+  let retstring= "OK.\n";
   try {
     result = await axios.post(process.env.LISTENER, JSON.stringify(obj));
     global.logger.log("info", "Sent message to Listener: " + JSON.stringify(obj));
   }
   catch (err) {
+    retstring= "Error.\n"
+    retcode= err.response.status;
     global.logger.log("error", "Can't post data to Listener " + process.env.LISTENER + " " + JSON.stringify(obj) + " " + err);
   }
 
-  res.write("OK.\n");
+  res.write(retstring);
+  res.status(retcode);
   res.end();
-  global.logger.log("info", "Message successfully handled.");
-
+  if(retcode==200)
+    global.logger.log("info", "Message successfully handled.");
+  else
+  global.logger.log("error", "Can't send message to listener or listener returns error.");
 });
 
 router.all('/', async function (req, res, next) {

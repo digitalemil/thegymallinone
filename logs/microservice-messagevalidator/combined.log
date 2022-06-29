@@ -1,0 +1,4 @@
+info: Starting microservice-messagevalidator {"service":"user-service"}
+info: Fields: ["heartrate","user","deviceid","color","id","location","event_timestamp"] {"service":"user-service"}
+info: Starting microservice-messagevalidator {"service":"user-service"}
+info: Fields: ["heartrate","user","deviceid","color","id","location","event_timestamp"] {"service":"user-service"}

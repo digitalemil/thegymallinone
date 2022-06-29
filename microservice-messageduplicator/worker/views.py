@@ -22,11 +22,30 @@ def index(request):
 @csrf_exempt
 def work(request):
   body = request.body.decode("utf-8")
-  logger.info("Got: " + body)
-  headers = {'Content-type': 'application/json'}
-  rs1 = requests.post(os.environ["DUPPLICATOR_OUT1"], data=body, headers=headers)
-  rs2 = requests.post(os.environ["DUPPLICATOR_OUT2"], data=body, headers=headers)
+  logger.info("Work, body: " + body)
+  logger.info("Work, headers: " + str(request.headers))
+  
+  rs1 = requests.post(os.environ["DUPPLICATOR_OUT1"], data=body, headers=request.headers)
+  rs2 = requests.post(os.environ["DUPPLICATOR_OUT2"], data=body, headers=request.headers)
 
+  s= 200
+  if rs1.status_code!= 200 or rs2.status_code!= 200:
+    s= 503
+  if s == 200:
+    logger.info("Message duplicated.")
+  else:
+    logger.error("Message NOT duplicated: "+rs1.status_code+" "+rs2.status_code)
+  return HttpResponse("OK", status= s)
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def worktwice(request):
+  body = request.body.decode("utf-8")
+  logger.info("work, got: " + body)
+  logger.info("work, headers: " + request.headers)
+  #headers = request.headers;
+  rs1 = requests.post(os.environ["MESSAGE_DUPLICATOR2"], data=body, headers=headers)
+ 
   s= 200
   if rs1.status_code!= 200 or rs2.status_code!= 200:
     s= 503

@@ -11,6 +11,8 @@ go get go.opentelemetry.io/otel/sdk
 go get go.opentelemetry.io/otel/exporters/stdout/stdouttrace
 go get -u go.opentelemetry.io/otel/exporters/otlp/otlptrace
 go get go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc
+go get go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin
+go get go.opentelemetry.io/otel/propagation
 go build logger.go
 mv logger logger-x64
 export GOOS=

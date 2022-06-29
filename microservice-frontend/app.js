@@ -31,7 +31,7 @@ app.get('/metrics', async (_req, res) => {
 const wlogger = winston.createLogger({
   level: 'info',
   format: winston.format.simple(),
-  defaultMeta: { service: 'user-service' },
+  defaultMeta: { },
   transports: [
     //
     // - Write all logs with importance level of `error` or less to `error.log`

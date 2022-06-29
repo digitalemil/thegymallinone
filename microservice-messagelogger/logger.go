@@ -14,12 +14,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zsais/go-gin-prometheus"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/semconv/v1.10.0"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 //	"go.opentelemetry.io/otel/trace"
+    "go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
     sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -49,6 +51,7 @@ func main() {
 	InfoLogger.Println("Logger starting...")
 
 	r := gin.Default()
+	r.Use(otelgin.Middleware("microservice-messagelogger"))
 	r.Static("/public", "./public")
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/index", home)
@@ -94,20 +97,26 @@ func main() {
 	}()
 	otel.SetTracerProvider(tp)
 */
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 	r.POST("/", func(c *gin.Context) {
 		jsonData, err := c.GetRawData()
-		newCtx, span := otel.Tracer(name).Start(c, "log")
+		//_, span := otel.Tracer(name).Start(c, "log")
 		if err != nil {
 			ErrorLogger.Println("No raw data: " + fmt.Sprint((err)))
-			span.End()
+		//	span.End()
 		}
-		logit(newCtx, string(jsonData))
-		span.End()
+		logit(c, string(jsonData))
+		//span.End()
+		rt, _ := strconv.Atoi(os.Getenv("LOGGER_RETURNCODE"))
+		if rt != 0 {
+			c.Writer.WriteHeader(rt)
+		}
+		InfoLogger.Println(c.Request.Header)
 	})
 //	r.GET("/metrics", prometheusHandler())
 	host := os.Getenv("LOGGER_HOST")
 	port := os.Getenv("LOGGER_PORT")
-
+	
 	log.Fatal(r.Run(host + ":" + port))
 }
 
@@ -191,8 +200,8 @@ func newResource() *resource.Resource {
 		resource.Default(),
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("thegym-microservice-messagelogger"),
-			semconv.ServiceVersionKey.String("v0.0.1"),
+			semconv.ServiceNameKey.String(os.Getenv("LOGGER_SERVICENAME")),
+			semconv.ServiceVersionKey.String(os.Getenv("v0.0.1")),
 			attribute.String("environment", "demo"),
 		),
 	)

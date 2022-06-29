@@ -23,62 +23,62 @@ logs:
           static_configs:
             - labels:
                 __path__: /opt/app/logs/microservice-sqlui/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-sqlui
+                app: thegym
+                service: sqlui
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-pmmlevaluator/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-pmmlevaluator
+                app: thegym
+                service: pmmlevaluator
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messagepersister/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messagepersister
+                app: thegym
+                service: messagepersister
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-frontend/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-frontend
+                app: thegym
+                service: frontend
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messagelistener/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messagelistener
+                app: thegym
+                service: messagelistener
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messagetransformer/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messagetransformer
+                app: thegym
+                service: messagetransformer
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messagevalidator/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messagevalidator
+                app: thegym
+                service: messagevalidator
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messagelogger/*.txt
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messagelogger
+                app: thegym
+                service: messagelogger
               targets:
                 - localhost
             - labels:
                 __path__: /opt/app/logs/microservice-messageduplicator/*.log
-                instance: $(K_SERVICE)
-                job: thegym/microservice-messageduplicator
+                app: thegym
+                service: messageduplicator
               targets:
                 - localhost
             - labels:
-                __path__: /cockroach-data/logs/*.log
-                instance: $(K_SERVICE)
-                job: thegym/cockroachdb
+                __path__: /cockroach-data/logs/cockroach.*root*log
+                app: thegym
+                service: cockroachdb
               targets:
                 - localhost
 
@@ -95,56 +95,65 @@ metrics:
           static_configs:
             - targets: ['thegym.theblackapp.de']
             - labels:
-                microservice: "frontend"
+                service: "frontend"
         - job_name: messagetransformer
           static_configs:
             - targets: ['127.0.0.1:3032']
             - labels:
-                microservice: "messagetransformer"      
+                app: thegym
+                service: "messagetransformer"      
         - job_name: messagevalidator
           static_configs:
             - targets: ['127.0.0.1:3033']
             - labels:
-                microservice: "messagevalidator"
+                app: thegym
+                service: "messagevalidator"
         - job_name: messagelistener
           static_configs:
             - targets: ['127.0.0.1:3034']
             - labels:
-                microservice: "messagelistener"        
+                app: thegym
+                service: "messagelistener"        
         - job_name: messagepersister
           static_configs:
             - targets: ['127.0.0.1:3038']
             - labels:
-                microservice: "messagepersister"        
+                app: thegym
+                service: "messagepersister"        
         - job_name: messagelogger
           static_configs:
             - targets: ['127.0.0.1:3036']
             - labels:
-                microservice: "messagelogger"
+                app: thegym
+                service: "messagelogger"
         - job_name: pmmlevaluator
           metrics_path: /actuator/prometheus
           static_configs:
             - targets: ['127.0.0.1:8080']
             - labels:
-                microservice: "pmmlevaluator"
+                app: thegym
+                service: "pmmlevaluator"
         - job_name: sqlui
           metrics_path: /sql/actuator/prometheus
           static_configs:
             - targets: ['127.0.0.1:8081']
             - labels:
-                microservice: "sqlui"
+                app: thegym
+                service: "sqlui"
         - job_name: integrations/python-django
           metrics_path: /metrics
           static_configs:
             - targets: ['127.0.0.1:3037']
             - labels:
-                microservice: "messageduplicator"
+                app: thegym
+                service: "messageduplicator"
         - job_name: integrations/cockroachdb
           metrics_path: /_status/vars
           static_configs:
             - targets: ['127.0.0.1:8088']
             - labels:
-                dbservice: "cockroachdb"
+                app: thegym
+                service:  "cockroachdb"
   global:
     scrape_interval: 10s
   wal_directory: /tmp/grafana-agent-wal
@@ -159,7 +168,6 @@ traces:
     receivers:
       otlp:
         protocols:
-          http:
           grpc:
 server:
   http_listen_port: 12345

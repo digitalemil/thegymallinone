@@ -7,14 +7,16 @@ export MESSAGE_PERSISTER=http://127.0.0.1:3038/persist
 export MESSAGE_DUPLICATOR=http://127.0.0.1:3037/work
 export PMML_EVALUATOR=http://127.0.0.1:8080
 export LISTENER=http://127.0.0.1:3034
-export DUPPLICATOR_OUT1=http://127.0.0.1:3036
-export DUPPLICATOR_OUT2=$LISTENER
 export LOGGER_HOST=0.0.0.0
 export LOGGER_PORT=3036
 export LOGGER_MINTIME=1
 export LOGGER_TIMEADDON=8
 export LOGGER_LOGFILE=/opt/app/logs/microservice-messagelogger/logs.txt
+export LOGGER_SERVICENAME=thegym-microservice-messagelogger
+export LOGGER_SERVICEVERSION=v0.0.1
+export LOGGER_RETURNCODE=
 export LOGFOLDER=/opt/app/logs
+
 export DUPPLICATOR_OUT1=$MESSAGE_VALIDATOR
 export DUPPLICATOR_OUT2=http://127.0.0.1:$LOGGER_PORT
 
@@ -32,6 +34,7 @@ mkdir -p /opt/app/logs/microservice-pmmlevaluator
 mkdir -p /opt/app/logs/microservice-sqlui
 mkdir -p /opt/app/logs/microservice-frontend/
 mkdir -p /opt/app/logs/microservice-messageduplicator
+export OTEL_PROPAGATORS=tracecontext,baggage
 export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:4317
 export OTEL_SERVICE_NAME=thegym-pmmlevaluator
 export OTEL_TRACES_EXPORTER=otlp
@@ -62,6 +65,7 @@ node --require '/opt/app/microservice-frontend/tracing.js' /opt/app/microservice
 sleep 2
 #cd /opt/app/microservice-messageduplicator; export DEBUG=true; gunicorn --bind 0.0.0.0:3037 MessageDuplicator.wsgi &
 export OTEL_SERVICE_NAME=thegym-messageduplicator
+export OTEL_PYTHON_LOG_CORRELATION=true
 #cd /opt/app/microservice-messageduplicator; export DEBUG=true;  python3 manage.py runserver 0.0.0.0:3037 &
 cd /opt/app/microservice-messageduplicator; export DEBUG=true; python3 manage.py runserver 0.0.0.0:3037 --noreload &
 

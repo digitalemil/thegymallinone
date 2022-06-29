@@ -26,11 +26,33 @@ const exporter = new OTLPTraceExporter({
 });
 */
 
+//const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
+const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
+//const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+
+//const provider = new NodeTracerProvider();
+//provider.register();
+
+/*
+registerInstrumentations({
+  instrumentations: [
+    ,
+    // other instrumentations
+  ],
+});
+*/
+
 // For troubleshooting, set the log level to DiagLogLevel.DEBUG
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 
 const sdk = new opentelemetry.NodeSDK({
   traceExporter: exporter,
-  instrumentations: [getNodeAutoInstrumentations()]
+  instrumentations: [getNodeAutoInstrumentations(), new WinstonInstrumentation({
+    // Optional hook to insert additional context to log metadata.
+    // Called after trace context is injected to metadata.
+    logHook: (span, record) => {
+     // record['resource.service.name'] = provider.resource.attributes['service.name'];
+    },
+  })]
 });
 sdk.start()
