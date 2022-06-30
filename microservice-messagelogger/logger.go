@@ -105,7 +105,8 @@ func main() {
 			ErrorLogger.Println("No raw data: " + fmt.Sprint((err)))
 		//	span.End()
 		}
-		logit(c, string(jsonData))
+		savedContext := c.Request.Context()
+		logit(savedContext, string(jsonData))
 		//span.End()
 		rt, _ := strconv.Atoi(os.Getenv("LOGGER_RETURNCODE"))
 		if rt != 0 {
