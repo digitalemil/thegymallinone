@@ -40,7 +40,7 @@ router.all('/load', async function (req, res, next) {
   }
   catch (err) {
     retstring= "Error.\n"
-    retcode= err.response.status;
+    retcode= result.response.status;
     global.logger.log("error", "Can't post data to Listener " + process.env.LISTENER + " " + JSON.stringify(obj) + " " + err);
   }
 

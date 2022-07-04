@@ -135,36 +135,36 @@ func logit(c context.Context, text string) {
 	newCtx, span := otel.Tracer(name).Start(c, "logit")
 	defer span.End();
 	span.SetAttributes(attribute.String("n (Number of Log entries)", strconv.FormatInt(n, 10)))
-	
-	InfoLogger.Println("Message body: " + text)
+	t := span.SpanContext().TraceID().String()
+	InfoLogger.Println("Message body: traceID:" + t)
 	var payload interface{}
 	err := json.Unmarshal([]byte(text), &payload)
 	if err != nil {
-		ErrorLogger.Println("Unmarshall error: " + fmt.Sprint((err)))
+		ErrorLogger.Println("Unmarshall error: " + fmt.Sprint((err))+" traceID:" + t)
 		return
 	}
-	InfoLogger.Println("Converting to json map.")
+	InfoLogger.Println("Converting to json map. traceID:" + t)
 	m := payload.(map[string]interface{})
 	InfoLogger.Println("Message map: " + fmt.Sprint(m))
 	InfoLogger.Println("Start marshalling")
 	jsonString, err := json.Marshal(m)
 	if err != nil {
-		ErrorLogger.Println("Message JSON payload: " + fmt.Sprint((err)))
+		ErrorLogger.Println("Message JSON payload: " + fmt.Sprint((err))+" traceID:" + t)
 		return
 	}
 
-	InfoLogger.Println("Marshalling done. Message map: " + fmt.Sprint(m))
+	InfoLogger.Println("Marshalling done. Message map: " + fmt.Sprint(m)+" traceID:" + t)
 
 	execute(newCtx, m)
 	LastMessage = string(jsonString)
-	InfoLogger.Println("Message json payload: " + string(jsonString))
+	InfoLogger.Println("Message json payload: " + string(jsonString)+" traceID:" + t)
 }
 
 func execute(c context.Context, json map[string]interface{}) {
 	_, span := otel.Tracer(name).Start(c, "execute")
 	defer span.End();
-	
-	InfoLogger.Println("Executing workload...")
+	t := span.SpanContext().TraceID().String()
+	InfoLogger.Println("Executing workload..."+" traceID:" + t)
 	mt, _ := strconv.Atoi(os.Getenv("LOGGER_MINTIME"))
 	addon, _ := strconv.Atoi(os.Getenv("LOGGER_TIMEADDON"))
 
@@ -173,7 +173,7 @@ func execute(c context.Context, json map[string]interface{}) {
 	after := time.Now().UnixNano() / int64(time.Millisecond)
 	span.SetAttributes(attribute.String("Execution time (in ms)", strconv.FormatInt(after-now,10)))
 
-	InfoLogger.Println("Done... " + strconv.FormatInt(after-now, 10) + " ms.")
+	InfoLogger.Println("Done... " + strconv.FormatInt(after-now, 10) + " ms."+" traceID:" + t)
 }
 
 func prometheusHandler() gin.HandlerFunc {

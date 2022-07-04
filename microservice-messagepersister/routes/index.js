@@ -52,7 +52,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/persist', function(req, res, next) {
+router.post('/persist', async function(req, res, next) {
  let msg= req.body;
  global.logger.log("info", "Persisting: "+msg);
  
@@ -65,9 +65,11 @@ router.post('/persist', function(req, res, next) {
    sendError(res, 0);
    return;
  }
+ let start= new Date().getTime();
  let sql= "INSERT INTO HRDATA (id, color, location, event_timestamp, deviceid, username, heartrate) VALUES ("+jsonmsg.id+", '"+jsonmsg.color+"', '"+jsonmsg.location+"', '"+jsonmsg.event_timestamp+"', '"+jsonmsg.deviceid+"', '"+jsonmsg.user+"', "+jsonmsg.heartrate+")";
- client.query(sql);
- global.logger.log("info", "Executing: "+sql);
+ await client.query(sql);
+ let finish= new Date().getTime();
+ global.logger.log("info", "Executed in "+(finish-start)+ "ms "+sql);
  res.statusCode= 200;
  res.end();
 });

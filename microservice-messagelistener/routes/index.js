@@ -58,7 +58,7 @@ async function persist(msg) {
     global.logger.log("error", "Message persist failed: "+err.response.status+ " "+msg+" "+process.env.MESSAGE_PERSISTER);   
     return false;
   }
-  if(result.status!= 200)
+  if(result== undefined || result.status!= 200)
     return false;
   return true;
 };
@@ -139,7 +139,7 @@ async function handleMessage(msg) {
 
   if(!await persist(msg)) {
     global.logger.log("error", "Can't persist msg: "+ msg);
-    laststatus= 400;
+    laststatus= 500;
   }
   else {
     global.logger.log("info", "Message persisted: "+msg);

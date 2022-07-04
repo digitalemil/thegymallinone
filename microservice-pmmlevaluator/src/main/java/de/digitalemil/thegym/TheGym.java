@@ -109,14 +109,15 @@ public class TheGym {
 			if (modelobj != null) {
 				String model = modelobj.toString();
 				model = model.replace("'", "\"");
-				logger.info("Model: "+model);
-		
+				logger.info("Model set.");
+			
 				Evaluator m = setModelString(model);
 				ret = getResult(m, model, jobj);
 			}
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
+		
 		logger.info("In: " + lasthr+" Out: "+lastresult);
 		return ret;
 	}
