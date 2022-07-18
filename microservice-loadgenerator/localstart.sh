@@ -1,3 +1,3 @@
-export LISTENER="http://localhost:8081"
+export LISTENER="http://localhost:3000/data"
 
 nodemon npm start

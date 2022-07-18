@@ -16,7 +16,7 @@ export LOGGER_LOGFILE=$HOME/tmp/logs.txt
 export LOGFOLDER=$HOME/tmp
 export DUPPLICATOR_OUT1=$MESSAGE_VALIDATOR
 export DUPPLICATOR_OUT2=http://127.0.0.1:$LOGGER_PORT
-
+export PORT=3000
 export CONFIG='{"OAUTH2_CLIENT_ID": "510682337906-fqud8bpsm0sifcacsvacqd7ff1pc8kes.apps.googleusercontent.com","OAUTH2_CLIENT_SECRET": "Pk0WiJ7X-YVnzkw-U6ljeKbD","OAUTH2_CALLBACK": "http://localhost:3000/auth/google/callback"}'
 
 nodemon bin/www

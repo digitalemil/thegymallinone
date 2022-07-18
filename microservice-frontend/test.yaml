@@ -1,0 +1,55 @@
+metrics:
+  wal_directory: /tmp/wal
+  global: {}
+  configs:
+    - name: default
+      remote_write:
+        - url: https://prometheus-us-central1.grafana.net/api/prom/push
+          basic_auth:
+            username: xxx
+            password: xxx
+logs:
+  positions_directory: /tmp/loki-pos
+  configs:
+    - name: default
+      scrape_configs: []
+      clients:
+        - url: https://xxx:xxx@logs-prod-us-central1.grafana.net/loki/api/v1/push
+traces:
+  configs:
+    - name: default
+      remote_write:
+        - endpoint: tempo-us-central1.grafana.net:443
+          basic_auth:
+            username: xxx
+            password: xxx
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+            http:
+              cors:
+                allowed_origins:
+                  - http://localhost:1234
+                max_age: 7200
+integrations:
+  app_agent_receiver_configs:
+    - autoscrape:
+        enable: true
+        metrics_instance: 'default'
+      api_key: 'secret' # optional, if set, client will be required to provide it via x-api-key header
+      instance: 'frontend'
+      logs_instance: 'default'
+      traces_instance: 'default'
+      server:
+        host: 0.0.0.0
+        port: 12345
+        cors_allowed_origins:
+          - 'https://my-app.example.com'
+      logs_labels: # labels to add to loki log record
+        app: frontend # static value
+        kind: # value will be taken from log items. exception, log, measurement, etc
+      logs_send_timeout: 5000
+      sourcemaps:
+        download: true # will download source file, extract source map location,
+        # download source map and use it to transform stack trace locations

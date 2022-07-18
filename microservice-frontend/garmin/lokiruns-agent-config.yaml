@@ -1,0 +1,43 @@
+logs:
+  configs:
+    - clients:
+        - basic_auth:
+            password: eyJrIjoiYzE5OTViMjJlZmYxZWVkZTMwZjBkOWIzYjQzNTcyNjU1YmZhZWY0MyIsIm4iOiJ0aGVneW0tbG9ncyIsImlkIjo1OTY2NTF9
+            username: 158892
+          url: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
+      name: lokiruns
+      positions:
+        filename: /tmp/positions.yaml
+      scrape_configs:
+      target_config:
+        sync_period: 10s
+metrics:
+  wal_directory: /tmp/grafana-agent-wal
+  global:
+  configs:
+    - name: lokiruns
+      remote_write:
+        - basic_auth:
+            password: eyJrIjoiOTI2M2FjNzBiYzE5ZWYwZGIyZTQ5NzIzZGNiZWI4Yzk4YTBhMGYwMiIsIm4iOiJkaWdpdGFsZW1pbC1lYXN5c3RhcnQtcHJvbS1wdWJsaXNoZXIiLCJpZCI6NTk2NjUxfQ==
+            username: 319844
+          url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+
+integrations:
+  app_agent_receiver_configs:
+    - autoscrape:
+        enable: false
+        metrics_instance: 'lokiruns'
+      instance: 'lokiruns'
+      logs_instance: 'lokiruns'
+      server:
+        host: 0.0.0.0
+        port: 3000
+        cors_allowed_origins:
+          - '*'
+        rate_limiting:
+          enabled: false
+        api_key: "key"
+      logs_labels: # labels to add to loki log record
+        app: lokiruns # static value
+        kind: # value will be taken from log items. exception, log, measurement, etc
+    

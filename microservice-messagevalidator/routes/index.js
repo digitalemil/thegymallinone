@@ -84,23 +84,23 @@ function validate(val, t) {
   }
 }
 
-function sendError(res, w) {   
+function sendError(res, w, msg) {   
   res.statusCode= 400;
 
   if(w== 0) {
-    global.logger.log("error","Can't convert to json.");
+    global.logger.log("error","Can't convert to json. "+msg);
     laststatus=res.statusCode+" "+"Can't convert to json.";
   }
   if(w== 1) {
-    global.logger.log("error","Number of fields does not match.");
+    global.logger.log("error","Incorrect number of fields. "+msg);
     laststatus=res.statusCode+" "+"Number of fields does not match.";
   }
   if(w== 2) {
-    global.logger.log("error","Field not found.");
+    global.logger.log("error","Field not found error. "+msg);
     laststatus=res.statusCode+" "+"Field not found.";
   }
   if(w== 3) {
-    global.logger.log("error","Content does not match type.");
+    global.logger.log("error","Content doesn't match type. "+msg);
     laststatus=res.statusCode+" "+"Content does not match type.";
   }
    res.end();
@@ -118,13 +118,13 @@ router.post('/', function(req, res, next) {
  }
  catch(ex) {
   global.logger.log("error",ex);
-   sendError(res, 0);
+   sendError(res, 0, msg);
    return;
  }
  if(Object.keys(jsonmsg).length!= fields.length) {
   global.logger.log("error"," expecting: "+fields.length+" got: "+Object.keys(jsonmsg).length);
   global.logger.log("error",jsonmsg);
-   sendError(res, 1);
+   sendError(res, 1, msg);
    return;
  }
 
@@ -141,11 +141,11 @@ router.post('/', function(req, res, next) {
    }
   
    if(n== fields.length) {
-     sendError(res, 2);
+     sendError(res, 2, msg);
      return;
    }
    if(! validate(jsonmsg[property], types[n])) {
-      sendError(res, 3);
+      sendError(res, 3, msg);
       return;
    }
 }

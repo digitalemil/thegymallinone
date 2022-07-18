@@ -34,6 +34,7 @@ router.all('/load', async function (req, res, next) {
 
   let retcode= 200;
   let retstring= "OK.\n";
+  if(!(process.env.NOLISTENER=="true")) {
   try {
     result = await axios.post(process.env.LISTENER, JSON.stringify(obj));
     global.logger.log("info", "Sent message to Listener: " + JSON.stringify(obj));
@@ -43,7 +44,7 @@ router.all('/load', async function (req, res, next) {
     retcode= result.response.status;
     global.logger.log("error", "Can't post data to Listener " + process.env.LISTENER + " " + JSON.stringify(obj) + " " + err);
   }
-
+  }
   res.write(retstring);
   res.status(retcode);
   res.end();

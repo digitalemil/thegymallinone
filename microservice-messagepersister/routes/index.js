@@ -9,6 +9,7 @@ var lastmsg= "";
 var async = require('async');
 var fs = require('fs');
 var pg = require('pg');
+const errorToJSON = require('error-to-json')
 
 // Connect to the "thegym" database.
 var config = {
@@ -61,13 +62,21 @@ router.post('/persist', async function(req, res, next) {
    jsonmsg= JSON.parse(msg);
  }
  catch(ex) {
-   global.logger.log("error", ex.toString());
+   global.logger.log("error", errorToJSON(ex));
    sendError(res, 0);
    return;
  }
  let start= new Date().getTime();
  let sql= "INSERT INTO HRDATA (id, color, location, event_timestamp, deviceid, username, heartrate) VALUES ("+jsonmsg.id+", '"+jsonmsg.color+"', '"+jsonmsg.location+"', '"+jsonmsg.event_timestamp+"', '"+jsonmsg.deviceid+"', '"+jsonmsg.user+"', "+jsonmsg.heartrate+")";
- await client.query(sql);
+ try {
+  await client.query(sql);
+ }
+ catch(ex) {
+  global.logger.log("error", errorToJSON(ex));
+  res.statusCode= 500;
+  res.end();
+  return;
+ }
  let finish= new Date().getTime();
  global.logger.log("info", "Executed in "+(finish-start)+ "ms "+sql);
  res.statusCode= 200;

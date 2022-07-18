@@ -40,6 +40,8 @@ if (allinone)
 
 
 async function getDataFromListeners() {
+  if(process.env.NOLISTENER=="true")
+    return;
   try {
     //const span = global.tracer.startSpan("getDataFromListeners");
     for (let i = 0; i < nlisteners; i++) {
@@ -262,7 +264,11 @@ router.post(['/data'], async function (req, res, next) {
   }
   let result = "";
   try {
-    result = await axios.post(h + p, msg);
+    if(!(process.env.NOLISTENER=="true")) {
+      console.log("process.env.NOLISTENER: "+process.env.NOLISTENER)
+   
+      result = await axios.post(h + p, msg);
+    }
     let pm = JSON.parse(msg);
     addMessage(pm.user, pm)
     global.logger.log("info", "Data: " + pm);

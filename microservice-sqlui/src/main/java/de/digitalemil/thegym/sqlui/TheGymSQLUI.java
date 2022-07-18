@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.ComponentScan;
+
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 // CREATE DATABASE mydb COLOCATED=true;
 @SpringBootApplication
+@ComponentScan("de.digitalemil.thegym")
 @RestController
 public class TheGymSQLUI {
 	@Autowired

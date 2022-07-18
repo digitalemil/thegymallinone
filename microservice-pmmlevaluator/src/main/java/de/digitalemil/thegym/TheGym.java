@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -50,20 +51,26 @@ import java.net.URLDecoder;
 import java.io.PrintWriter;
 import io.prometheus.client.hotspot.DefaultExports;
 import jakarta.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import lombok.extern.slf4j.Slf4j;
+import groovy.util.logging.Log4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 @SpringBootApplication
+@ComponentScan("de.digitalemil.thegym")
 @RestController
+@Log4j
 public class TheGym {
 	static String pivotfieldname = "";
 	static JSONArray fields;
 	static String lastmsg="";
 	static String lastresult="";
 	static String lasthr="";
-	private static final Logger logger = LoggerFactory.getLogger(TheGym.class);
- 	
-
+	//private static final Logger logger = LoggerFactory.getLogger(TheGym.class);
+	
 	public static void main(String[] args) {
 		SpringApplication.run(TheGym.class, args);
 		DefaultExports.initialize();
@@ -86,7 +93,7 @@ public class TheGym {
 				System.out.println("Pivot field: " + pivotfieldname);
 			}
 		}
-		logger.info("Pivot field: " + pivotfieldname);
+		log.info("Pivot field: " + pivotfieldname);
 	}
 
 	@PostMapping(value = "/", produces = (MediaType.TEXT_PLAIN_VALUE))
@@ -109,16 +116,16 @@ public class TheGym {
 			if (modelobj != null) {
 				String model = modelobj.toString();
 				model = model.replace("'", "\"");
-				logger.info("Model set.");
+				log.info("Model set.");
 			
 				Evaluator m = setModelString(model);
 				ret = getResult(m, model, jobj);
 			}
 		} catch (Exception e) {
-			logger.error(e.toString());
+			log.error(e.toString());
 		}
 		
-		logger.info("In: " + lasthr+" Out: "+lastresult);
+		log.info("In: " + lasthr+" Out: "+lastresult);
 		return ret;
 	}
 
@@ -182,10 +189,25 @@ public class TheGym {
 		try {
 			return createModelEvaluator(s);
 		} catch (SAXException e) {
-			logger.error(e.toString());
+			log.error(e.toString());
 		} catch (JAXBException e) {
-			logger.error(e.toString());
+			log.error(e.toString());
 		}
 		return null;
 	}
+
+	@Configuration
+	public class RequestLoggingFilterConfig {
+
+    @Bean
+    public CommonsRequestLoggingFilter logFilter() {
+        CommonsRequestLoggingFilter filter
+          = new CommonsRequestLoggingFilter();
+        filter.setIncludeQueryString(true);
+        filter.setIncludeHeaders(true);
+        filter.setIncludeClientInfo(true);
+        filter.setIncludePayload(true);
+        return filter;
+    }
+}
 }
