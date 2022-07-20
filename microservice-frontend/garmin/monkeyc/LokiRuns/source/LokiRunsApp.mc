@@ -11,8 +11,8 @@ using Toybox.Time.Gregorian;
 class LokiRunsApp extends Application.AppBase {
 
 var view= null;
-var hr= null;
-var location= null;
+var START=-1000000;
+var dlon= START, dlat= START, dspeed= START, dhr= START, hr, speed= START, cadence, heading, altitude, accelX, accelY, accelZ, magX, magY, magZ, oxygenSat, power, pressure, temperature, location, longitude=START, latitude=START;
 var duration= new Time.Duration(1000);
 var lastrequest= null;
 
@@ -52,13 +52,39 @@ function onPosition( info ) {
 function sensorInitialize() {
     Sensor.setEnabledSensors([Sensor.SENSOR_HEARTRATE]);
     Sensor.enableSensorEvents(method(:onSensor));
+
+    Sensor.setEnabledSensors( [Sensor.SENSOR_HEARTRATE, Sensor.SENSOR_PULSE_OXIMETRY, Sensor.SENSOR_TEMPERATURE] );
+    Sensor.enableSensorEvents( method( :onSensor ) );
 }
 
 function onSensor(sensorInfo) {
 	hr= sensorInfo.heartRate;
-  //  hr=123;
-	if(view != null && hr!= null) {
+  	if(view != null && hr!= null) {
+        speed= sensorInfo.speed;
+        altitude= sensorInfo.altitude;
+        heading= sensorInfo.heading;
+        cadence= sensorInfo.cadence;
+        accelX= sensorInfo.accel[0];
+        accelY= sensorInfo.accel[1];
+        accelZ= sensorInfo.accel[2];
+        magX= sensorInfo.mag[0];
+        magY= sensorInfo.mag[1];
+        magZ= sensorInfo.mag[2];
+        oxygenSat= sensorInfo.oxygenSaturation;
+        power= sensorInfo.power;
+        pressure= sensorInfo.pressure;
+        temperature= sensorInfo.temperature;
+        if(temperature== null) {
+            temperature= 0;
+        }
+        if(power== null) {
+            power= 0;
+        }
+        if(pressure== null) {
+            pressure= 0;
+        }
 	 	view.updateHR(hr);
+        view.updateSpeed(""+speed);
 	 	makeRequest();
 	 }
 }
@@ -77,12 +103,43 @@ function onSensor(sensorInfo) {
     //url ="http://localhost:8008/";
 
 	var lons=0, lats=0;
-    
-	if(location!= null) {
+    var tdhr= hr, tdlat= 0, tdlon= 0, tdspeed= speed;
+
+    if(location!= null) {
 		lons= location[0];
 		lats= location[1];
+        if(dlat!= START) {
+            tdlat= dlat-location[1];
+        }
+        if(dlon!= START) {
+            tdlon=dlon- location[0];
+        }
 	}
-    var logline = "{\"heartrate\":"+hr+", \"longitude\":"+lons+", \"latitude\":"+lats+", \"user\":\""+user+"\"}";
+    if(dhr!= START) {
+        tdhr= hr- dhr;
+    }
+    if(dspeed!= START) {
+        tdspeed= speed- dspeed;
+    }
+    if(dlat!= START) {
+        tdlat= location[1]- dlat;
+    }
+    if(dlon!= START) {
+        tdlon= location[0]- dlon;
+    }
+  
+    var logline = "{\"heartrate\":"+hr+", \"deltaHeartrate\":"+tdhr+", \"deltaSpeed\":"+tdspeed+", \"deltaLongitude\":"+tdlon+", \"deltaLatitude\":"+tdlat+", \"temperature\":"+temperature+", \"pressure\":"+pressure+", \"power\":"+power+", \"oxygenSaturation\":"+oxygenSat+", \"magX\":"+magX+", \"magY\":"+magY+", \"magZ\":"+magZ+", \"accelX\":"+accelX+", \"accelY\":"+accelY+", \"accelZ\":"+accelZ+", \"speed\":"+speed+", \"cadence\":"+cadence+", \"altitude\":"+altitude+", \"heading\":"+heading+", \"longitude\":"+lons+", \"latitude\":"+lats+", \"user\":\""+user+"\"}";
+    if(speed!= null) {
+        dspeed= speed;
+    }
+    if(location!= null) {
+        dlat= location[1];
+        dlon= location[0];
+    }
+    if(hr!= null) {
+        dhr= hr;
+    }
+
     var labels= {                                              
         "app" => "lokiruns"
     };

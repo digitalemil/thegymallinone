@@ -2,6 +2,7 @@ using Toybox.WatchUi;
 
 class LokiRunsView extends WatchUi.View {
  var hr= null;
+ var speed= null;
  var lon = null;
  var lat = null;
  
@@ -18,11 +19,20 @@ class LokiRunsView extends WatchUi.View {
 		lon.setText("---");
 		lat= findDrawableById("lat");
 		lat.setText("---");	
+        speed= findDrawableById("speed");
+        speed.setText("---");
     }
 
 	function updateHR(text) {
 		if(hr != null && text != null) {
 			hr.setText(text+" bpm");
+			WatchUi.requestUpdate();
+		}
+	}
+
+    function updateSpeed(text) {
+		if(speed != null && text != null) {
+			speed.setText(text+" m/s");
 			WatchUi.requestUpdate();
 		}
 	}
