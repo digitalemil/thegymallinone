@@ -53,8 +53,10 @@ function sensorInitialize() {
     Sensor.setEnabledSensors([Sensor.SENSOR_HEARTRATE]);
     Sensor.enableSensorEvents(method(:onSensor));
 
-    Sensor.setEnabledSensors( [Sensor.SENSOR_HEARTRATE, Sensor.SENSOR_PULSE_OXIMETRY, Sensor.SENSOR_TEMPERATURE] );
+/*
+    Sensor.setEnabledSensors( [Sensor.SENSOR_HEARTRATE, Sensor.SENSOR_TEMPERATURE] );
     Sensor.enableSensorEvents( method( :onSensor ) );
+    */
 }
 
 function onSensor(sensorInfo) {
@@ -70,7 +72,13 @@ function onSensor(sensorInfo) {
         magX= sensorInfo.mag[0];
         magY= sensorInfo.mag[1];
         magZ= sensorInfo.mag[2];
-        oxygenSat= sensorInfo.oxygenSaturation;
+      /*
+        try {
+            oxygenSat= sensorInfo.oxygenSaturation;
+        }
+        catch(exception) {
+            oxygenSat= 100;
+        }*/
         power= sensorInfo.power;
         pressure= sensorInfo.pressure;
         temperature= sensorInfo.temperature;
@@ -128,7 +136,7 @@ function onSensor(sensorInfo) {
         tdlon= location[0]- dlon;
     }
   
-    var logline = "{\"heartrate\":"+hr+", \"deltaHeartrate\":"+tdhr+", \"deltaSpeed\":"+tdspeed+", \"deltaLongitude\":"+tdlon+", \"deltaLatitude\":"+tdlat+", \"temperature\":"+temperature+", \"pressure\":"+pressure+", \"power\":"+power+", \"oxygenSaturation\":"+oxygenSat+", \"magX\":"+magX+", \"magY\":"+magY+", \"magZ\":"+magZ+", \"accelX\":"+accelX+", \"accelY\":"+accelY+", \"accelZ\":"+accelZ+", \"speed\":"+speed+", \"cadence\":"+cadence+", \"altitude\":"+altitude+", \"heading\":"+heading+", \"longitude\":"+lons+", \"latitude\":"+lats+", \"user\":\""+user+"\"}";
+    var logline = "{\"heartrate\":"+hr+", \"deltaHeartrate\":"+tdhr+", \"deltaSpeed\":"+tdspeed+", \"deltaLongitude\":"+tdlon+", \"deltaLatitude\":"+tdlat+", \"temperature\":"+temperature+", \"pressure\":"+pressure+", \"power\":"+power+", \"magX\":"+magX+", \"magY\":"+magY+", \"magZ\":"+magZ+", \"accelX\":"+accelX+", \"accelY\":"+accelY+", \"accelZ\":"+accelZ+", \"speed\":"+speed+", \"cadence\":"+cadence+", \"altitude\":"+altitude+", \"heading\":"+heading+", \"longitude\":"+lons+", \"latitude\":"+lats+", \"user\":\""+user+"\"}";
     if(speed!= null) {
         dspeed= speed;
     }
