@@ -7,3 +7,4 @@
 ./microservice-frontend/*.log
 cockroach-v22.1.1.linux-amd64.tgz
 cockroach
+*/*/target
