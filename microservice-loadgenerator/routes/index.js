@@ -66,6 +66,10 @@ for(var i= 0; i< 8; i++) {
 }, function(err, response, body) {
 	if(err!=null) {
 		console.log(err);
+ 	}	
+ if(response== undefined || response.statusCode== undefined) {
+	console.log("HTTP status: Error. response or statusCode undefined");
+	return;
  }
  if(response.statusCode== 200) {
      delta= 8000;

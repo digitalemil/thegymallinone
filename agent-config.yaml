@@ -164,7 +164,7 @@ traces:
       - endpoint: tempo-eu-west-0.grafana.net:443
         basic_auth:
           username: 155402
-          password: eyJrIjoiODBjYWE4MGM2MDk4NmY0NWQ1NDU5ZGZiMDc2ZjVmYzg1OTYxNjAzZCIsIm4iOiJ0aGVneW0tdHJhY2VzIiwiaWQiOjU5NjY1MX0=
+          password: eyJrIjoiMjUzNTZiZTU5ZDEwM2I1MWQxNmNlOGEzMGNhYmY5NzgxYmM5ZDIzOCIsIm4iOiJ0cmFjZXMiLCJpZCI6NTk2NjUxfQ==
     receivers:
       otlp:
         protocols:

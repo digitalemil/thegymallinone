@@ -75,10 +75,12 @@ sleep 2
 export OTEL_SERVICE_NAME=thegym-messagelogger
 cd /opt/app/microservice-messagelogger; ./logger &
 
-#node /opt/app/microservice-loadgenerator/bin/www &
 sleep 2
+/bin/agent --config.file=/opt/app/agent-config.yaml &
+
+sleep 2
+cd /opt/app/microservice-loadgenerator; node ./bin/www &
 
 
-/bin/agent --config.file=/opt/app/agent-config.yaml 
-
+tail -f /dev/null
 

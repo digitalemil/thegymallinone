@@ -51,8 +51,8 @@ import java.net.URLDecoder;
 import java.io.PrintWriter;
 import io.prometheus.client.hotspot.DefaultExports;
 import jakarta.xml.bind.JAXBException;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 //import lombok.extern.slf4j.Slf4j;
 import groovy.util.logging.Log4j;
 import org.springframework.context.annotation.Bean;
@@ -69,7 +69,7 @@ public class TheGym {
 	static String lastmsg="";
 	static String lastresult="";
 	static String lasthr="";
-	//private static final Logger logger = LoggerFactory.getLogger(TheGym.class);
+	private static final Logger logger = LoggerFactory.getLogger(TheGym.class);
 	
 	public static void main(String[] args) {
 		SpringApplication.run(TheGym.class, args);
@@ -93,7 +93,7 @@ public class TheGym {
 				System.out.println("Pivot field: " + pivotfieldname);
 			}
 		}
-		log.info("Pivot field: " + pivotfieldname);
+		logger.info("Pivot field: " + pivotfieldname);
 	}
 
 	@PostMapping(value = "/", produces = (MediaType.TEXT_PLAIN_VALUE))
@@ -116,16 +116,16 @@ public class TheGym {
 			if (modelobj != null) {
 				String model = modelobj.toString();
 				model = model.replace("'", "\"");
-				log.info("Model set.");
+				logger.info("Model set.");
 			
 				Evaluator m = setModelString(model);
 				ret = getResult(m, model, jobj);
 			}
 		} catch (Exception e) {
-			log.error(e.toString());
+			logger.error(e.toString());
 		}
 		
-		log.info("In: " + lasthr+" Out: "+lastresult);
+		logger.info("In: " + lasthr+" Out: "+lastresult);
 		return ret;
 	}
 
@@ -189,9 +189,9 @@ public class TheGym {
 		try {
 			return createModelEvaluator(s);
 		} catch (SAXException e) {
-			log.error(e.toString());
+			logger.error(e.toString());
 		} catch (JAXBException e) {
-			log.error(e.toString());
+			logger.error(e.toString());
 		}
 		return null;
 	}
